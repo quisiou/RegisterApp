@@ -37,35 +37,21 @@ class App(ctk.CTk):
         self.__create_main_frame()
 
 
-    def __add_frame(self, root: Any, id: str, pos: Literal['grid', 'pack', 'place'],
-            params: dict = {}, position_params: dict = {}) -> None:
-
-        assert id not in self.__content, 'ID already in use'
-
-        self.__content[id] = Frame(
-            root=root,
-            pos=pos,
-            params=params,
-            position_params=position_params
-        )
-
-
     def __create_main_frame(self) -> None:
-        frame_params = {
-            'fg_color': '#808080'
-        }
-
-        position_params = {
-            'fill': ctk.BOTH, # Fill all the assigned space in the container
-            'expand': True, # expand when window is resized
-            'padx': self._current_height / 100,
-            'pady': self._current_height / 100
-        }
-
-        self.__add_frame(
+        
+        mainFrame = Frame(
             root=self,
-            id='main',
             pos='pack',
-            params=frame_params,
-            position_params=position_params
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'fill': ctk.BOTH, # Fill all the assigned space in the container
+                'expand': True, # expand when window is resized
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
+            }
         )
+        add_widget_to_container(mainFrame, self.__content, 'mainFrame')
+
+        print(self.__content)
