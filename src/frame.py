@@ -1,14 +1,27 @@
 import customtkinter as ctk
-from typing import Any
+from typing import Any, Literal
 
 class Frame():
 
     __frame: ctk.CTkFrame
     __widgets: dict
 
-    def __init__(self, root: Any, params: dict = {}):
+    def __init__(self, root: Any, pos: Literal['grid', 'pack', 'place'],
+            params: dict = {}, position_params: dict = {}):
+
+
         self.__frame = ctk.CTkFrame(root, **params)
         self.__widgets = {}
+
+        match pos:
+            case 'grid':
+                self.__frame.grid(**position_params)
+                
+            case 'pack':
+                self.__frame.pack(**position_params)
+
+            case 'place':
+                self.__frame.place(**position_params)
 
 
     def add_entry(self, id: str, params: dict = {}) -> None:
@@ -16,6 +29,7 @@ class Frame():
         assert id not in self.__widgets, 'ID already in use'
         
         self.__widgets[id] = ctk.CTkEntry(self.__frame, **params)
+
 
     @property
     def frame(self) -> ctk.CTkFrame:
