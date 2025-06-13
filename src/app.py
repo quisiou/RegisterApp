@@ -1,11 +1,10 @@
 import customtkinter as ctk
 
-from src.frame import Frame
 from src.dataManager import Manager
 
 from pathlib import Path
 
-from utils.widgets import *
+from src.widget import Widget, Frame
 from utils.parameters import *
 
 class App(ctk.CTk):
@@ -81,9 +80,30 @@ class App(ctk.CTk):
 
 
         # The main frame
-        mainFrame = Frame(
+        # Frame(
+        #     master=self,
+        #     container=self.__children,
+        #     ID='mainFrame',
+        #     locator=ctk.CTkBaseClass.pack,
+        #     forgetter=ctk.CTkBaseClass.pack_forget,
+        #     params={
+        #         'fg_color': "transparent"
+        #     },
+        #     position_params={
+        #         'fill': ctk.BOTH, # Fill all the assigned space in the container
+        #         'expand': True, # expand when window is resized
+        #         'padx': self._current_height / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+
+        # The log in frame
+        logInFrame = Frame(
             master=self,
+            container=self.__children,
+            ID='logInFrame',
             locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'fg_color': "transparent"
             },
@@ -94,31 +114,16 @@ class App(ctk.CTk):
                 'pady': self._current_height / 100
             }
         )
-        add_widget_to_container(mainFrame, self.__children, 'mainFrame')
-
-        # The log in frame
-        logInFrame = Frame(
-            master=self,
-            locator=ctk.CTkBaseClass.pack,
-            params={
-                'fg_color': "transparent",
-            },
-            position_params={
-                'fill': ctk.BOTH, # Fill all the assigned space in the container
-                'expand': True, # expand when window is resized
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100
-            }
-        )
-        add_widget_to_container(logInFrame, self.__children, 'logInFrame')
+        logInFrame.show()
 
         # The entry for the ID number
-        idEntry = create_widget(
-            Widget=ctk.CTkEntry,
+        idEntry = Widget(
+            Obj=ctk.CTkEntry,
             master=logInFrame.widget,
             container=logInFrame.children,
-            id='idEntry',
+            ID='idEntry',
             locator=ctk.CTkBaseClass.grid,
+            forgetter=ctk.CTkBaseClass.grid_forget,
             params={
                 'placeholder_text': 'Introducir el DNI',
                 'width': 200
@@ -129,25 +134,26 @@ class App(ctk.CTk):
                 'rowspan': 2,
                 'padx': self._current_width / 100,
                 'pady': self._current_height / 100
-            },
-            out=True
+            }
         )
-        idEntry.bind(
+        idEntry.widget.bind(
             sequence="<Return>",
             command=add_log
         )
-        idEntry.bind(
+        idEntry.widget.bind(
             sequence="<Escape>",
             command=self.__unfocus
         )
+        idEntry.show()
 
         # The entry for the personal code
-        codeEntry = create_widget(
-            Widget=ctk.CTkEntry,
+        codeEntry = Widget(
+            Obj=ctk.CTkEntry,
             master=logInFrame.widget,
             container=logInFrame.children,
-            id='personalCodeEntry',
+            ID='personalCodeEntry',
             locator=ctk.CTkBaseClass.grid,
+            forgetter=ctk.CTkBaseClass.grid_forget,
             params={
                 'placeholder_text': 'Introducir el código',
                 'width': 200
@@ -158,25 +164,26 @@ class App(ctk.CTk):
                 'rowspan': 2,
                 'padx': self._current_width / 25,
                 'pady': self._current_height / 25
-            },
-            out=True
+            }
         )
-        codeEntry.bind(
+        codeEntry.widget.bind(
             sequence="<Return>",
             command=add_log
         )
-        codeEntry.bind(
+        codeEntry.widget.bind(
             sequence="<Escape>",
             command=self.__unfocus
         )
+        codeEntry.show()
 
         # The button which checks the code
-        create_widget(
-            Widget=ctk.CTkButton,
+        logInButton = Widget(
+            Obj=ctk.CTkButton,
             master=logInFrame.widget,
             container=logInFrame.children,
-            id='personalCodeChecker',
+            ID='personalCodeChecker',
             locator=ctk.CTkBaseClass.grid,
+            forgetter=ctk.CTkBaseClass.grid_forget,
             params={
                 'command': add_log,
                 'text': 'Comprobar'
@@ -188,3 +195,4 @@ class App(ctk.CTk):
                 'pady': self._current_height / 25
             }
         )
+        logInButton.show()
