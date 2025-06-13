@@ -47,7 +47,7 @@ class App(ctk.CTk):
         '''
 
         self.focus()
-
+    
 
     def __initialize(self) -> None:
         '''
@@ -81,11 +81,27 @@ class App(ctk.CTk):
 
 
         # The main frame
-        logInFrame = Frame(
+        mainFrame = Frame(
             master=self,
             locator=ctk.CTkBaseClass.pack,
             params={
                 'fg_color': "transparent"
+            },
+            position_params={
+                'fill': ctk.BOTH, # Fill all the assigned space in the container
+                'expand': True, # expand when window is resized
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
+            }
+        )
+        add_widget_to_container(mainFrame, self.__children, 'mainFrame')
+
+        # The log in frame
+        logInFrame = Frame(
+            master=self,
+            locator=ctk.CTkBaseClass.pack,
+            params={
+                'fg_color': "transparent",
             },
             position_params={
                 'fill': ctk.BOTH, # Fill all the assigned space in the container
