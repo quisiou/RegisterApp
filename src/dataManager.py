@@ -9,6 +9,22 @@ class Manager():
     of entries in the register's data files.
     '''
 
+    class NotFoundID(Exception):
+        def __init__(self, *args):
+            super().__init__('No employee found on the database matching the ID number')
+
+    class InvalidID(Exception):
+        def __init__(self, *args):
+            super().__init__('Invalid ID format')
+
+    class InvalidPassword(Exception):
+        def __init__(self, *args):
+            super().__init__('Invalid password for this employee')
+
+    class AlreadyExistingID(Exception):
+        def __init__(self, *args):
+            super().__init__('ID number already registered')
+
 
     @staticmethod
     def __get_staff_info() -> pd.DataFrame:
@@ -56,12 +72,12 @@ class Manager():
 
         # Verify if new employee
         if number in list(df['NIF/NIE']):
-            print('Ya existe')
-        else:
-            df.loc[len(df)] = [number, name, last1, last2, password]
+            raise Manager.AlreadyExistingID()
+        
+        df.loc[len(df)] = [number, name, last1, last2, password]
 
-            # Save data
-            df.to_parquet(Path(DATA_DIR, STAFF_FILE), engine='pyarrow')
+        # Save data
+        df.to_parquet(Path(DATA_DIR, STAFF_FILE), engine='pyarrow')
     
 
     @staticmethod
@@ -74,21 +90,27 @@ class Manager():
             password (str): Employee's password
         '''
 
+        if len(id) != 9 or not id[8].isalpha() or not id[:8].isnumeric():
+            raise Manager.InvalidID()
+
         df = Manager.__get_staff_info()
 
         employee = df[df['NIF/NIE'] == number]
 
-        if employee is not None and employee['Código'][0] == password:
+        if employee is None:
+            raise Manager.NotFoundID()
 
-            logs = Manager.__get_log_info()
+        if employee['Código'][0] != password:
+            raise Manager.InvalidPassword()
 
-            dt = str(datetime.now()).split()
+        logs = Manager.__get_log_info()
+        dt = str(datetime.now()).split()
 
-            logs.loc[len(logs)] = [
-                number,
-                dt[0],
-                dt[1].split('.')[0],
-                'Inicio' if len(logs[logs['NIF/NIE'] == number]) % 2 == 0 else 'Fin'
-            ]
+        logs.loc[len(logs)] = [
+            number,
+            dt[0],
+            dt[1].split('.')[0],
+            'Inicio' if len(logs[logs['NIF/NIE'] == number]) % 2 == 0 else 'Fin'
+        ]
 
-            logs.to_parquet(Path(DATA_DIR, LOG_FILE), engine='pyarrow')
+        logs.to_parquet(Path(DATA_DIR, LOG_FILE), engine='pyarrow')

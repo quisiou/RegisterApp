@@ -54,6 +54,7 @@ class App(ctk.CTk):
         Initializes all the required widgets and frames for the application
         '''
 
+
         def add_log(e=None):
             '''
             Tries to log, checking if everything is valid
@@ -62,9 +63,19 @@ class App(ctk.CTk):
             '''
 
             text = mainFrame.children['personalCodeEntry'].get()
+            num = mainFrame.children['idEntry'].get()
             
-            if len(text) > 0:
-                Manager.add_entry('06035683T', text)
+            try:
+                Manager.add_entry(num, text)
+
+            except Manager.InvalidID as e:
+                print(e)
+
+            except Manager.NotFoundID as e:
+                print(e)
+
+            except Manager.InvalidPassword as e:
+                print(e)
 
             self.__unfocus(e)
 
@@ -85,6 +96,35 @@ class App(ctk.CTk):
         )
         add_widget_to_container(mainFrame, self.__children, 'mainFrame')
 
+        # The entry for the ID number
+        idEntry = create_widget(
+            Widget=ctk.CTkEntry,
+            master=mainFrame.widget,
+            container=mainFrame.children,
+            id='idEntry',
+            locator=ctk.CTkBaseClass.grid,
+            params={
+                'placeholder_text': 'Introducir el DNI',
+                'width': 200
+            },
+            position_params={
+                'row': 0,
+                'column': 0,
+                'rowspan': 2,
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100
+            },
+            out=True
+        )
+        idEntry.bind(
+            sequence="<Return>",
+            command=add_log
+        )
+        idEntry.bind(
+            sequence="<Escape>",
+            command=self.__unfocus
+        )
+
         # The entry for the personal code
         codeEntry = create_widget(
             Widget=ctk.CTkEntry,
@@ -97,11 +137,11 @@ class App(ctk.CTk):
                 'width': 200
             },
             position_params={
-                'row': 0,
+                'row': 1,
                 'column': 0,
                 'rowspan': 2,
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100
+                'padx': self._current_width / 25,
+                'pady': self._current_height / 25
             },
             out=True
         )
@@ -128,7 +168,7 @@ class App(ctk.CTk):
             position_params={
                 'row': 0,
                 'column': 1,
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100
+                'padx': self._current_width / 25,
+                'pady': self._current_height / 25
             }
         )
