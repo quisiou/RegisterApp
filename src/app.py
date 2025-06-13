@@ -55,16 +55,16 @@ class App(ctk.CTk):
         '''
 
 
-        def add_log(e=None):
+        def add_log(event=None):
             '''
             Tries to log, checking if everything is valid
 
             :params (Any, Default=None) e: The event which triggered this method
             '''
 
-            text = mainFrame.children['personalCodeEntry'].get()
-            num = mainFrame.children['idEntry'].get()
-            
+            text = logInFrame.children['personalCodeEntry'].get()
+            num = logInFrame.children['idEntry'].get()
+
             try:
                 Manager.add_entry(num, text)
 
@@ -77,11 +77,11 @@ class App(ctk.CTk):
             except Manager.InvalidPassword as e:
                 print(e)
 
-            self.__unfocus(e)
+            self.__unfocus(event)
 
 
         # The main frame
-        mainFrame = Frame(
+        logInFrame = Frame(
             master=self,
             locator=ctk.CTkBaseClass.pack,
             params={
@@ -94,13 +94,13 @@ class App(ctk.CTk):
                 'pady': self._current_height / 100
             }
         )
-        add_widget_to_container(mainFrame, self.__children, 'mainFrame')
+        add_widget_to_container(logInFrame, self.__children, 'logInFrame')
 
         # The entry for the ID number
         idEntry = create_widget(
             Widget=ctk.CTkEntry,
-            master=mainFrame.widget,
-            container=mainFrame.children,
+            master=logInFrame.widget,
+            container=logInFrame.children,
             id='idEntry',
             locator=ctk.CTkBaseClass.grid,
             params={
@@ -128,8 +128,8 @@ class App(ctk.CTk):
         # The entry for the personal code
         codeEntry = create_widget(
             Widget=ctk.CTkEntry,
-            master=mainFrame.widget,
-            container=mainFrame.children,
+            master=logInFrame.widget,
+            container=logInFrame.children,
             id='personalCodeEntry',
             locator=ctk.CTkBaseClass.grid,
             params={
@@ -157,8 +157,8 @@ class App(ctk.CTk):
         # The button which checks the code
         create_widget(
             Widget=ctk.CTkButton,
-            master=mainFrame.widget,
-            container=mainFrame.children,
+            master=logInFrame.widget,
+            container=logInFrame.children,
             id='personalCodeChecker',
             locator=ctk.CTkBaseClass.grid,
             params={

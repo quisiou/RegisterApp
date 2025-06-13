@@ -90,7 +90,7 @@ class Manager():
             password (str): Employee's password
         '''
 
-        if len(id) != 9 or not id[8].isalpha() or not id[:8].isnumeric():
+        if len(number) != 9 or not number[8].isalpha() or not number[:8].isnumeric():
             raise Manager.InvalidID()
 
         df = Manager.__get_staff_info()
