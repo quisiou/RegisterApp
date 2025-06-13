@@ -1,10 +1,12 @@
 import customtkinter as ctk
 
 from src.frame import Frame
+from src.dataManager import Manager
 
 from pathlib import Path
 
 from utils.widgets import *
+from utils.parameters import *
 
 class App(ctk.CTk):
     '''
@@ -13,7 +15,8 @@ class App(ctk.CTk):
 
     __children: dict = None # Children widgets of the app
 
-    def __init__(self, width: int = 500, height: int = 200, custom_theme: str = None):
+    def __init__(self, width: int = WINDOW_WIDTH,
+        height: int = WINDOW_HEIGHT, custom_theme: str = None):
 
         # set custom theme
         theme_path = Path(Path.cwd(), 'themes', f'{custom_theme}.json')
@@ -51,16 +54,17 @@ class App(ctk.CTk):
         Initializes all the required widgets and frames for the application
         '''
 
-        def check_code(e=None):
+        def add_log(e=None):
             '''
-            Checks whether the code has been introduced and whether it is valid
+            Tries to log, checking if everything is valid
 
             :params (Any, Default=None) e: The event which triggered this method
             '''
 
             text = mainFrame.children['personalCodeEntry'].get()
             
-            if len(text) > 0: print(text)
+            if len(text) > 0:
+                Manager.add_entry('06035683T', text)
 
             self.__unfocus(e)
 
@@ -103,7 +107,7 @@ class App(ctk.CTk):
         )
         codeEntry.bind(
             sequence="<Return>",
-            command=check_code
+            command=add_log
         )
         codeEntry.bind(
             sequence="<Escape>",
@@ -118,7 +122,7 @@ class App(ctk.CTk):
             id='personalCodeChecker',
             locator=ctk.CTkBaseClass.grid,
             params={
-                'command': check_code,
+                'command': add_log,
                 'text': 'Comprobar'
             },
             position_params={
