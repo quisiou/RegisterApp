@@ -11,7 +11,7 @@ class App(ctk.CTk):
     Main application class
     '''
 
-    __children: dict = None
+    __children: dict = None # Children widgets of the app
 
     def __init__(self, width: int = 500, height: int = 200, custom_theme: str = None):
 
@@ -36,14 +36,32 @@ class App(ctk.CTk):
         self.__initialize()
 
 
-    def __unfocus(self, e=None):
+    def __unfocus(self, e=None) -> None:
+        '''
+        Unfocuses the actual focused widget (by focusing the main window)
+
+        :params (Any, Default=None) e: The event which triggered this method
+        '''
+
         self.focus()
 
 
     def __initialize(self) -> None:
+        '''
+        Initializes all the required widgets and frames for the application
+        '''
 
         def check_code(e=None):
-            print(mainFrame.children['personalCodeEntry'].get())
+            '''
+            Checks whether the code has been introduced and whether it is valid
+
+            :params (Any, Default=None) e: The event which triggered this method
+            '''
+
+            text = mainFrame.children['personalCodeEntry'].get()
+            
+            if len(text) > 0: print(text)
+
             self.__unfocus(e)
 
 
