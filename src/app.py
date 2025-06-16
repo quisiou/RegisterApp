@@ -12,7 +12,7 @@ class App(ctk.CTk):
     Main application class
     '''
 
-    __children: dict = None # Children widgets of the app
+    _children: dict = None # Children widgets of the app
 
     def __init__(self, width: int = WINDOW_WIDTH,
         height: int = WINDOW_HEIGHT, custom_theme: str = None):
@@ -29,10 +29,11 @@ class App(ctk.CTk):
         # window-related
         self.geometry(f"{width}x{height}")
         self.resizable(width=False, height=False)
+        # self.resizable(width=True, height=True)
         self.title('Clocker')
 
         # Attributes
-        self.__children = {}
+        self._children = {}
 
         # Create all the widgets for the application
         self.__initialize()
@@ -53,8 +54,13 @@ class App(ctk.CTk):
         Initializes all the required widgets and frames for the application
         '''
 
+        
+        def change_to_login(event=None) -> None:
+            self._children['mainFrame'].hide()
+            self._children['logInFrame'].show()
 
-        def add_log(event=None):
+
+        def add_log(event=None) -> None:
             '''
             Tries to log, checking if everything is valid
 
@@ -80,27 +86,75 @@ class App(ctk.CTk):
 
 
         # The main frame
-        # Frame(
-        #     master=self,
-        #     container=self.__children,
-        #     ID='mainFrame',
-        #     locator=ctk.CTkBaseClass.pack,
-        #     forgetter=ctk.CTkBaseClass.pack_forget,
-        #     params={
-        #         'fg_color': "transparent"
-        #     },
-        #     position_params={
-        #         'fill': ctk.BOTH, # Fill all the assigned space in the container
-        #         'expand': True, # expand when window is resized
-        #         'padx': self._current_height / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
+        mainFrame = Frame(
+            master=self,
+            container=self._children,
+            ID='mainFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'fill': ctk.BOTH, # Fill all the assigned space in the container
+                'expand': True, # expand when window is resized
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
+            },
+            active=True
+        )
+        
+        logInButton = Widget(
+            Obj=ctk.CTkButton,
+            master=mainFrame.widget,
+            container=mainFrame.children,
+            ID='logInButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': add_log,
+                'text': 'Iniciar sesión'
+            },
+            position_params={
+                'side': ctk.TOP,
+                'anchor': ctk.CENTER,
+                'pady': (self._current_height / 3, 0)
+            },
+            active=True
+        )
+        
+        addStaffButton = Widget(
+            Obj=ctk.CTkButton,
+            master=mainFrame.widget,
+            container=mainFrame.children,
+            ID='addStaffButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                # 'command': print('Hola'),
+                'text': 'Crear usuario',
+                'border_color': '#1f538d',
+                'border_width': 2,
+                'fg_color': 'gray10'
+            },
+            position_params={
+                'side': ctk.BOTTOM,
+                'anchor': ctk.CENTER,
+                'pady': (0, self._current_height / 3)
+            },
+            active=True
+        )
+        
+
+
+        ################
+        # Log-In Stuff #
+        ################
 
         # The log in frame
         logInFrame = Frame(
             master=self,
-            container=self.__children,
+            container=self._children,
             ID='logInFrame',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
@@ -114,7 +168,6 @@ class App(ctk.CTk):
                 'pady': self._current_height / 100
             }
         )
-        logInFrame.show()
 
         # The entry for the ID number
         idEntry = Widget(
@@ -136,15 +189,8 @@ class App(ctk.CTk):
                 'pady': self._current_height / 100
             }
         )
-        idEntry.widget.bind(
-            sequence="<Return>",
-            command=add_log
-        )
-        idEntry.widget.bind(
-            sequence="<Escape>",
-            command=self.__unfocus
-        )
-        idEntry.show()
+        idEntry.widget.bind(sequence="<Return>", command=add_log)
+        idEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
 
         # The entry for the personal code
         codeEntry = Widget(
@@ -166,18 +212,11 @@ class App(ctk.CTk):
                 'pady': self._current_height / 25
             }
         )
-        codeEntry.widget.bind(
-            sequence="<Return>",
-            command=add_log
-        )
-        codeEntry.widget.bind(
-            sequence="<Escape>",
-            command=self.__unfocus
-        )
-        codeEntry.show()
+        codeEntry.widget.bind(sequence="<Return>", command=add_log)
+        codeEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
 
         # The button which checks the code
-        logInButton = Widget(
+        checkUserButton = Widget(
             Obj=ctk.CTkButton,
             master=logInFrame.widget,
             container=logInFrame.children,
@@ -195,4 +234,3 @@ class App(ctk.CTk):
                 'pady': self._current_height / 25
             }
         )
-        logInButton.show()

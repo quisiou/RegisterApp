@@ -1,72 +1,79 @@
 from customtkinter import CTkBaseClass, CTkFrame
 from typing import Any
 
-class Widget():
+class Widget:
     '''
     Global widget class
     '''
 
-    __widget: CTkBaseClass = None
-    __params: dict = None
-    __locator: callable = None
-    __forget: callable = None
-    __active: bool = None
+    _widget: CTkBaseClass = None
+    _params: dict = None
+    _locator: Any = None
+    _forget: Any = None
+    _active: bool = None
 
-    def __init__(self, Obj: Any, master: Any, container: dict, ID: str, locator: callable,
-        forgetter: callable, params: dict = {}, position_params: dict = {}):
+    def __init__(self, Obj: Any, master: Any, container: dict, ID: str, locator: Any,
+        forgetter: Any, params: dict = {}, position_params: dict = {}, active: bool = False):
         '''
         Params:
             Obj (Any): The widget class (any of the possible widgets)
             master (Any): The master of the new widget
             container (dict): The container where the widget will be added
             ID (str): The identifier of the widget in the container
-            locator (callable): The method to locate the widget on the screen
-            forgetter (callable): The method to hide the widget from the screen
+            locator (Any): The method to locate the widget on the screen
+            forgetter (Any): The method to hide the widget from the screen
             params (dict, Default={}): Parameters for the customisation of the widget
             position_params (dict, Default={}): Parameters for the placement of the widget
+            active (bool, Default=False): Whether to show directly the widget
         '''
 
         assert ID not in container, 'ID already in use'
 
-        self.__widget = Obj(master, **params)
-        self.__locator = locator
-        self.__forget = forgetter
-        self.__params = position_params
-        self.__active = False
+        self._widget = Obj(master, **params)
+        self._locator = locator
+        self._forget = forgetter
+        self._params = position_params
+        self._active = active
 
-        # Add it to the container
+        # add to the container
         container[ID] = self
 
+        # show directly if wanted
+        if active: self.show()
 
+    
     def show(self) -> None:
 
-        # May be interesting to show all children, and so on...
-        self.__locator(self.__widget, **self.__params)
-        self.__active = True
+        self._active = True
+        self._locator(self._widget, **self._params)
 
 
     def hide(self) -> None:
 
-        # May be interesting to hide all children, and so on...
-        self.__forget(self.__widget)
-        self.__active = False
+        self._active = False
+        self._forget(self._widget)
 
     
     def get(self) -> str | None:
         try:
-            return self.__widget.get()
+            return self._widget.get()
         except Exception as e:
             return None
         
 
     @property
     def widget(self) -> CTkBaseClass:
-        return self.__widget
+        return self._widget
 
 
     @property
     def loc_params(self) -> dict:
-        return self.__params
+        return self._params
+    
+
+    @property
+    def active(self) -> bool:
+        return self._active
     
 
 
@@ -75,20 +82,23 @@ class Frame(Widget):
     Frame widget, derived from global `Widget` class
     '''
 
-    __children: dict
+    _children: dict
 
-    def __init__(self, master: Any, container: dict, ID: str, locator: callable,
-        forgetter: callable, params: dict = {}, position_params: dict = {}):
+    def __init__(self, master: Any, container: dict, ID: str, locator: Any,
+        forgetter: Any, params: dict = {}, position_params: dict = {}, active: bool = False):
         '''
         Params:
             master (Any): The master of the new widget
             container (dict): The container where the widget will be added
             ID (str): The identifier of the widget in the container
-            locator (callable): The method to locate the widget on the screen
-            forgetter (callable): The method to hide the widget from the screen
+            locator (Any): The method to locate the widget on the screen
+            forgetter (Any): The method to hide the widget from the screen
             params (dict, Default={}): Parameters for the customisation of the widget
             position_params (dict, Default={}): Parameters for the placement of the widget
+            active (bool, Default=False): Whether to show directly the widget
         '''
+
+        self._children = {}
 
         super().__init__(
             Obj=CTkFrame,
@@ -98,12 +108,31 @@ class Frame(Widget):
             locator=locator,
             forgetter=forgetter,
             params=params,
-            position_params=position_params
+            position_params=position_params,
+            active=active
         )
-
-        self.__children = {}
 
 
     @property
     def children(self) -> dict:
-        return self.__children
+        return self._children
+    
+
+    def show(self) -> None:
+
+        self._locator(self._widget, **self._params)
+
+        for w in self._children:
+            w.show()
+
+        self._active = True
+
+
+    def hide(self) -> None:
+
+        self._forget(self._widget)
+
+        for w in self._children:
+            w.hide()
+
+        self._active = False
