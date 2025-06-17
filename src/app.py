@@ -27,9 +27,8 @@ class App(ctk.CTk):
         super().__init__()
 
         # window-related
-        self.geometry(f"{width}x{height}")
+        self.geometry(self.__centerWindowOnScreen(width, height))
         self.resizable(width=False, height=False)
-        # self.resizable(width=True, height=True)
         self.title('Clocker')
 
         # Attributes
@@ -37,6 +36,17 @@ class App(ctk.CTk):
 
         # Create all the widgets for the application
         self.__initialize()
+
+
+    def __centerWindowOnScreen(self, width: int, height: int, scale_factor: float = 1.0):
+        '''
+        Centers the window to the main display/monitor
+        '''
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = int(((screen_width/2) - (width/2)) * scale_factor)
+        y = int(((screen_height/2) - (height/1.5)) * scale_factor)
+        return f"{width}x{height}+{x}+{y}"
 
 
     def __unfocus(self, e=None) -> None:
@@ -49,43 +59,17 @@ class App(ctk.CTk):
         self.focus()
     
 
-    def __initialize(self) -> None:
-        '''
-        Initializes all the required widgets and frames for the application
-        '''
+    def __initialize_main(self) -> None:
 
-        
         def change_to_login(event=None) -> None:
             self._children['mainFrame'].hide()
             self._children['logInFrame'].show()
 
 
-        def add_log(event=None) -> None:
-            '''
-            Tries to log, checking if everything is valid
-
-            :params (Any, Default=None) e: The event which triggered this method
-            '''
-
-            text = logInFrame.children['personalCodeEntry'].get()
-            num = logInFrame.children['idEntry'].get()
-
-            try:
-                Manager.add_entry(num, text)
-
-            except Manager.InvalidID as e:
-                print(e)
-
-            except Manager.NotFoundID as e:
-                print(e)
-
-            except Manager.InvalidPassword as e:
-                print(e)
-
-            self.__unfocus(event)
+        def change_to_create(event=None) -> None:
+            print('En construcción...')
 
 
-        # The main frame
         mainFrame = Frame(
             master=self,
             container=self._children,
@@ -112,7 +96,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': add_log,
+                'command': change_to_login,
                 'text': 'Iniciar sesión'
             },
             position_params={
@@ -131,7 +115,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                # 'command': print('Hola'),
+                'command': change_to_create,
                 'text': 'Crear usuario',
                 'border_color': '#1f538d',
                 'border_width': 2,
@@ -144,14 +128,36 @@ class App(ctk.CTk):
             },
             active=True
         )
+
+
+    def __initialize_login(self) -> None:
+
+        def add_log(event=None, frame: Frame = None) -> None:
+            '''
+            Tries to log, checking if everything is valid
+
+            :params (Any, Default=None) e: The event which triggered this method
+            '''
+
+            text = frame.children['personalCodeEntry'].get()
+            num = frame.children['idEntry'].get()
+
+            try:
+                Manager.add_entry(num, text)
+
+            except Manager.InvalidID as e:
+                print(e)
+
+            except Manager.NotFoundID as e:
+                print(e)
+
+            except Manager.InvalidPassword as e:
+                print(e)
+
+            self.__unfocus(event)
+
         
-
-
-        ################
-        # Log-In Stuff #
-        ################
-
-        # The log in frame
+        # The frame with all the login stuff
         logInFrame = Frame(
             master=self,
             container=self._children,
@@ -189,7 +195,7 @@ class App(ctk.CTk):
                 'pady': self._current_height / 100
             }
         )
-        idEntry.widget.bind(sequence="<Return>", command=add_log)
+        idEntry.widget.bind(sequence="<Return>", command=lambda x: add_log(event=x, frame=logInFrame))
         idEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
 
         # The entry for the personal code
@@ -212,11 +218,11 @@ class App(ctk.CTk):
                 'pady': self._current_height / 25
             }
         )
-        codeEntry.widget.bind(sequence="<Return>", command=add_log)
+        codeEntry.widget.bind(sequence="<Return>", command=lambda x: add_log(event=x, frame=logInFrame))
         codeEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
 
         # The button which checks the code
-        checkUserButton = Widget(
+        Widget(
             Obj=ctk.CTkButton,
             master=logInFrame.widget,
             container=logInFrame.children,
@@ -224,7 +230,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.grid,
             forgetter=ctk.CTkBaseClass.grid_forget,
             params={
-                'command': add_log,
+                'command': lambda: add_log(frame=logInFrame),
                 'text': 'Comprobar'
             },
             position_params={
@@ -234,3 +240,24 @@ class App(ctk.CTk):
                 'pady': self._current_height / 25
             }
         )
+
+
+    def __initialize(self) -> None:
+        '''
+        Initializes all the required widgets and frames for the application
+        '''
+
+        ################
+        # Log-In Stuff #
+        ################
+
+        self.__initialize_login()
+        
+
+        ##################
+        # The main frame #
+        ##################
+
+        self.__initialize_main()
+        
+

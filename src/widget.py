@@ -44,13 +44,11 @@ class Widget:
     
     def show(self) -> None:
 
-        self._active = True
         self._locator(self._widget, **self._params)
 
 
     def hide(self) -> None:
 
-        self._active = False
         self._forget(self._widget)
 
     
@@ -74,6 +72,18 @@ class Widget:
     @property
     def active(self) -> bool:
         return self._active
+    
+    
+    @active.setter
+    def activate(self) -> None:
+        self._active = True
+        self.show()
+
+
+    @active.setter
+    def deactivate(self) -> None:
+        self._active = False
+        self.hide()
     
 
 
@@ -122,17 +132,13 @@ class Frame(Widget):
 
         self._locator(self._widget, **self._params)
 
-        for w in self._children:
+        for k, w in self._children.items():
             w.show()
-
-        self._active = True
 
 
     def hide(self) -> None:
 
         self._forget(self._widget)
 
-        for w in self._children:
+        for k, w in self._children.items():
             w.hide()
-
-        self._active = False
