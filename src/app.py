@@ -28,7 +28,7 @@ class App(ctk.CTk):
 
         # window-related
         self.geometry(self.__centerWindowOnScreen(width, height))
-        self.resizable(width=True, height=True)
+        self.resizable(width=False, height=False)
         self.title('Clocker')
 
         # Attributes
@@ -260,35 +260,51 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'fg_color': "transparent"
+                'fg_color': 'transparent'
             },
             position_params={
-                'fill': ctk.BOTH, # Fill all the assigned space in the container
-                'expand': True, # expand when window is resized
+                'fill': ctk.BOTH,
+                'expand': True,
                 'padx': self._current_height / 100,
                 'pady': self._current_height / 100
             }
         )
-        createUserFrame.widget.rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
-        createUserFrame.widget.columnconfigure(0, weight=1)
 
         dataInputFrame = Frame(
             master=createUserFrame.widget,
             container=createUserFrame._children,
             ID='dataInputFrame',
-            locator=ctk.CTkBaseClass.grid,
-            forgetter=ctk.CTkBaseClass.grid_forget,
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'fg_color': "gray23"
+                'fg_color': "gray23",
+                'height': 5 * self._current_height / 6
             },
             position_params={
-                'row': 0,
-                'rowspan': 4,
-                'sticky': 'nsew',
+                'fill': ctk.BOTH,
+                'expand': True,
                 'padx': self._current_height / 100,
                 'pady': self._current_height / 100
             }
         )
+
+        buttonsFrame = Frame(
+            master=createUserFrame.widget,
+            container=createUserFrame._children,
+            ID='buttonsFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'fill': ctk.BOTH,
+                'expand': True,
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
+            }
+        )
+        buttonsFrame.widget.columnconfigure((0, 1), weight=1)
 
 
         # The widgets
@@ -463,42 +479,48 @@ class App(ctk.CTk):
         # )
         # repeatPassword.widget.bind(sequence="<Escape>", command=self.__unfocus)
 
-        # createButton = Widget(
-        #     Obj=ctk.CTkButton,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
-        #     ID='createButton',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'command': createUser,
-        #         'text': 'Crear'
-        #     },
-        #     position_params={
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
+        createButton = Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='createButton',
+            locator=ctk.CTkBaseClass.grid,
+            forgetter=ctk.CTkBaseClass.grid_forget,
+            params={
+                'command': createUser,
+                'text': 'Crear'
+            },
+            position_params={
+                'row': 0,
+                'column': 1,
+                'sticky': 'nse',
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100
+            }
+        )
 
-        # cancelButton = Widget(
-        #     Obj=ctk.CTkButton,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
-        #     ID='cancelButton',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'command': cancel,
-        #         'text': 'Cancelar',
-        #         'border_color': '#1f538d',
-        #         'border_width': 2,
-        #         'fg_color': 'gray10'
-        #     },
-        #     position_params={
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
+        cancelButton = Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='cancelButton',
+            locator=ctk.CTkBaseClass.grid,
+            forgetter=ctk.CTkBaseClass.grid_forget,
+            params={
+                'command': cancel,
+                'text': 'Cancelar',
+                'border_color': '#1f538d',
+                'border_width': 2,
+                'fg_color': 'gray10'
+            },
+            position_params={
+                'row': 0,
+                'column': 0,
+                'sticky': 'nsw',
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100
+            }
+        )
 
 
     def __initialize(self) -> None:
