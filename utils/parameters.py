@@ -3,8 +3,8 @@
 from pathlib import Path
 
 # Window related
-WINDOW_WIDTH = 500
-WINDOW_HEIGHT = 200
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 400
 
 
 # Directories

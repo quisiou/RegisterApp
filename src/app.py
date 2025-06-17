@@ -28,7 +28,7 @@ class App(ctk.CTk):
 
         # window-related
         self.geometry(self.__centerWindowOnScreen(width, height))
-        self.resizable(width=False, height=False)
+        self.resizable(width=True, height=True)
         self.title('Clocker')
 
         # Attributes
@@ -67,7 +67,8 @@ class App(ctk.CTk):
 
 
         def change_to_create(event=None) -> None:
-            print('En construcción...')
+            self._children['mainFrame'].hide()
+            self._children['createUserFrame'].show()
 
 
         mainFrame = Frame(
@@ -195,7 +196,6 @@ class App(ctk.CTk):
                 'pady': self._current_height / 100
             }
         )
-        idEntry.widget.bind(sequence="<Return>", command=lambda x: add_log(event=x, frame=logInFrame))
         idEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
 
         # The entry for the personal code
@@ -218,7 +218,6 @@ class App(ctk.CTk):
                 'pady': self._current_height / 25
             }
         )
-        codeEntry.widget.bind(sequence="<Return>", command=lambda x: add_log(event=x, frame=logInFrame))
         codeEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
 
         # The button which checks the code
@@ -242,6 +241,266 @@ class App(ctk.CTk):
         )
 
 
+    def __initialize_create(self) -> None:
+
+        def createUser() -> None:
+            print('Usuario creado!')
+
+
+        def cancel() -> None:
+            self._children['createUserFrame'].hide()
+            self._children['mainFrame'].show()
+
+
+        # The frames and their configs
+        createUserFrame = Frame(
+            master=self,
+            container=self._children,
+            ID='createUserFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'fill': ctk.BOTH, # Fill all the assigned space in the container
+                'expand': True, # expand when window is resized
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
+            }
+        )
+        createUserFrame.widget.rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
+        createUserFrame.widget.columnconfigure(0, weight=1)
+
+        dataInputFrame = Frame(
+            master=createUserFrame.widget,
+            container=createUserFrame._children,
+            ID='dataInputFrame',
+            locator=ctk.CTkBaseClass.grid,
+            forgetter=ctk.CTkBaseClass.grid_forget,
+            params={
+                'fg_color': "gray23"
+            },
+            position_params={
+                'row': 0,
+                'rowspan': 4,
+                'sticky': 'nsew',
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
+            }
+        )
+
+
+        # The widgets
+
+        # nameEntry = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='nameEntry',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'Nombre'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # nameEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # lastname1 = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='lastname1',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'Apellido 1'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # lastname1.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # lastname2 = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='lastname2',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'Apellido 2'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # lastname2.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # postalCode = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='postalCode',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'Código Postal'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # postalCode.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # idNumber = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='idNumber',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'NIF'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # idNumber.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # address = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='address',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'Calle'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # address.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # email = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='email',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'Correo electrónico'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # email.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # phoneNumber = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='phoneNumber',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'Tfno'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # phoneNumber.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # password = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='password',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'Contraseña'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # password.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # repeatPassword = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='repeatPassword',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'Repetir contraseña'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # repeatPassword.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
+        # createButton = Widget(
+        #     Obj=ctk.CTkButton,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='createButton',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'command': createUser,
+        #         'text': 'Crear'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+
+        # cancelButton = Widget(
+        #     Obj=ctk.CTkButton,
+        #     master=createUserFrame.widget,
+        #     container=createUserFrame.children,
+        #     ID='cancelButton',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'command': cancel,
+        #         'text': 'Cancelar',
+        #         'border_color': '#1f538d',
+        #         'border_width': 2,
+        #         'fg_color': 'gray10'
+        #     },
+        #     position_params={
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+
+
     def __initialize(self) -> None:
         '''
         Initializes all the required widgets and frames for the application
@@ -252,6 +511,13 @@ class App(ctk.CTk):
         ################
 
         self.__initialize_login()
+
+
+        #####################
+        # Create user Stuff #
+        #####################
+
+        self.__initialize_create()
         
 
         ##################
