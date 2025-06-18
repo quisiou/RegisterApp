@@ -28,7 +28,8 @@ class App(ctk.CTk):
 
         # window-related
         self.geometry(self.__centerWindowOnScreen(width, height))
-        self.resizable(width=False, height=False)
+        # self.resizable(width=False, height=False)
+        self.resizable(width=True, height=True)
         self.title('Clocker')
 
         # Attributes
@@ -277,16 +278,17 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'fg_color': "gray23",
-                'height': 5 * self._current_height / 6
+                'fg_color': "gray23"
             },
             position_params={
-                'fill': ctk.BOTH,
-                'expand': True,
                 'padx': self._current_height / 100,
-                'pady': self._current_height / 100
+                'pady': self._current_height / 100,
+                'side': ctk.TOP,
+                'expand': True,
+                'fill': ctk.BOTH
             }
         )
+        dataInputFrame.widget.rowconfigure((0, 1, 2), weight=1)
 
         buttonsFrame = Frame(
             master=createUserFrame.widget,
@@ -295,13 +297,13 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'fg_color': "transparent"
+                'fg_color': "gray46"
             },
             position_params={
-                'fill': ctk.BOTH,
-                'expand': True,
                 'padx': self._current_height / 100,
-                'pady': self._current_height / 100
+                'pady': self._current_height / 100,
+                'side': ctk.TOP,
+                'fill': ctk.BOTH
             }
         )
         buttonsFrame.widget.columnconfigure((0, 1), weight=1)
@@ -311,8 +313,8 @@ class App(ctk.CTk):
 
         # nameEntry = Widget(
         #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
         #     ID='nameEntry',
         #     locator=ctk.CTkBaseClass.grid,
         #     forgetter=ctk.CTkBaseClass.grid_forget,
@@ -320,6 +322,7 @@ class App(ctk.CTk):
         #         'placeholder_text': 'Nombre'
         #     },
         #     position_params={
+        #         'row': 0,
         #         'padx': self._current_width / 100,
         #         'pady': self._current_height / 100
         #     }
@@ -328,8 +331,8 @@ class App(ctk.CTk):
 
         # lastname1 = Widget(
         #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
         #     ID='lastname1',
         #     locator=ctk.CTkBaseClass.grid,
         #     forgetter=ctk.CTkBaseClass.grid_forget,
@@ -337,6 +340,7 @@ class App(ctk.CTk):
         #         'placeholder_text': 'Apellido 1'
         #     },
         #     position_params={
+        #         'row': 0,
         #         'padx': self._current_width / 100,
         #         'pady': self._current_height / 100
         #     }
@@ -345,8 +349,8 @@ class App(ctk.CTk):
 
         # lastname2 = Widget(
         #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
         #     ID='lastname2',
         #     locator=ctk.CTkBaseClass.grid,
         #     forgetter=ctk.CTkBaseClass.grid_forget,
@@ -354,6 +358,7 @@ class App(ctk.CTk):
         #         'placeholder_text': 'Apellido 2'
         #     },
         #     position_params={
+        #         'row': 0,
         #         'padx': self._current_width / 100,
         #         'pady': self._current_height / 100
         #     }
@@ -362,8 +367,8 @@ class App(ctk.CTk):
 
         # postalCode = Widget(
         #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
         #     ID='postalCode',
         #     locator=ctk.CTkBaseClass.grid,
         #     forgetter=ctk.CTkBaseClass.grid_forget,
@@ -371,33 +376,17 @@ class App(ctk.CTk):
         #         'placeholder_text': 'Código Postal'
         #     },
         #     position_params={
+        #         'row': 1,
         #         'padx': self._current_width / 100,
         #         'pady': self._current_height / 100
         #     }
         # )
         # postalCode.widget.bind(sequence="<Escape>", command=self.__unfocus)
 
-        # idNumber = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
-        #     ID='idNumber',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'NIF'
-        #     },
-        #     position_params={
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # idNumber.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
         # address = Widget(
         #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
         #     ID='address',
         #     locator=ctk.CTkBaseClass.grid,
         #     forgetter=ctk.CTkBaseClass.grid_forget,
@@ -405,6 +394,7 @@ class App(ctk.CTk):
         #         'placeholder_text': 'Calle'
         #     },
         #     position_params={
+        #         'row': 1,
         #         'padx': self._current_width / 100,
         #         'pady': self._current_height / 100
         #     }
@@ -413,8 +403,8 @@ class App(ctk.CTk):
 
         # email = Widget(
         #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
         #     ID='email',
         #     locator=ctk.CTkBaseClass.grid,
         #     forgetter=ctk.CTkBaseClass.grid_forget,
@@ -422,6 +412,7 @@ class App(ctk.CTk):
         #         'placeholder_text': 'Correo electrónico'
         #     },
         #     position_params={
+        #         'row': 1,
         #         'padx': self._current_width / 100,
         #         'pady': self._current_height / 100
         #     }
@@ -430,8 +421,8 @@ class App(ctk.CTk):
 
         # phoneNumber = Widget(
         #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
         #     ID='phoneNumber',
         #     locator=ctk.CTkBaseClass.grid,
         #     forgetter=ctk.CTkBaseClass.grid_forget,
@@ -439,16 +430,35 @@ class App(ctk.CTk):
         #         'placeholder_text': 'Tfno'
         #     },
         #     position_params={
+        #         'row': 1,
         #         'padx': self._current_width / 100,
         #         'pady': self._current_height / 100
         #     }
         # )
         # phoneNumber.widget.bind(sequence="<Escape>", command=self.__unfocus)
 
+        # idNumber = Widget(
+        #     Obj=ctk.CTkEntry,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
+        #     ID='idNumber',
+        #     locator=ctk.CTkBaseClass.grid,
+        #     forgetter=ctk.CTkBaseClass.grid_forget,
+        #     params={
+        #         'placeholder_text': 'NIF'
+        #     },
+        #     position_params={
+        #         'row': 2,
+        #         'padx': self._current_width / 100,
+        #         'pady': self._current_height / 100
+        #     }
+        # )
+        # idNumber.widget.bind(sequence="<Escape>", command=self.__unfocus)
+
         # password = Widget(
         #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
         #     ID='password',
         #     locator=ctk.CTkBaseClass.grid,
         #     forgetter=ctk.CTkBaseClass.grid_forget,
@@ -456,6 +466,7 @@ class App(ctk.CTk):
         #         'placeholder_text': 'Contraseña'
         #     },
         #     position_params={
+        #         'row': 2,
         #         'padx': self._current_width / 100,
         #         'pady': self._current_height / 100
         #     }
@@ -464,8 +475,8 @@ class App(ctk.CTk):
 
         # repeatPassword = Widget(
         #     Obj=ctk.CTkEntry,
-        #     master=createUserFrame.widget,
-        #     container=createUserFrame.children,
+        #     master=dataInputFrame.widget,
+        #     container=dataInputFrame.children,
         #     ID='repeatPassword',
         #     locator=ctk.CTkBaseClass.grid,
         #     forgetter=ctk.CTkBaseClass.grid_forget,
@@ -473,6 +484,7 @@ class App(ctk.CTk):
         #         'placeholder_text': 'Repetir contraseña'
         #     },
         #     position_params={
+        #         'row': 2,
         #         'padx': self._current_width / 100,
         #         'pady': self._current_height / 100
         #     }
@@ -484,18 +496,16 @@ class App(ctk.CTk):
             master=buttonsFrame.widget,
             container=buttonsFrame.children,
             ID='createButton',
-            locator=ctk.CTkBaseClass.grid,
-            forgetter=ctk.CTkBaseClass.grid_forget,
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'command': createUser,
                 'text': 'Crear'
             },
             position_params={
-                'row': 0,
-                'column': 1,
-                'sticky': 'nse',
                 'padx': self._current_width / 100,
-                'pady': self._current_height / 100
+                'pady': self._current_height / 100,
+                'side': ctk.RIGHT
             }
         )
 
@@ -504,8 +514,8 @@ class App(ctk.CTk):
             master=buttonsFrame.widget,
             container=buttonsFrame.children,
             ID='cancelButton',
-            locator=ctk.CTkBaseClass.grid,
-            forgetter=ctk.CTkBaseClass.grid_forget,
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'command': cancel,
                 'text': 'Cancelar',
@@ -514,11 +524,9 @@ class App(ctk.CTk):
                 'fg_color': 'gray10'
             },
             position_params={
-                'row': 0,
-                'column': 0,
-                'sticky': 'nsw',
                 'padx': self._current_width / 100,
-                'pady': self._current_height / 100
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT
             }
         )
 
