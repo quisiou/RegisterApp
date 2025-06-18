@@ -35,6 +35,9 @@ class App(ctk.CTk):
         # Attributes
         self._children = {}
 
+        # Binds
+        self.bind(sequence="<Escape>", func=self.__unfocus)
+
         # Create all the widgets for the application
         self.__initialize()
 
@@ -197,8 +200,7 @@ class App(ctk.CTk):
                 'pady': self._current_height / 100
             }
         )
-        idEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
+        
         # The entry for the personal code
         codeEntry = Widget(
             Obj=ctk.CTkEntry,
@@ -219,8 +221,7 @@ class App(ctk.CTk):
                 'pady': self._current_height / 25
             }
         )
-        codeEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
+        
         # The button which checks the code
         Widget(
             Obj=ctk.CTkButton,
@@ -254,6 +255,7 @@ class App(ctk.CTk):
 
 
         # The frames and their configs
+
         createUserFrame = Frame(
             master=self,
             container=self._children,
@@ -278,7 +280,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'fg_color': "gray23"
+                'fg_color': "transparent"
             },
             position_params={
                 'padx': self._current_height / 100,
@@ -288,8 +290,7 @@ class App(ctk.CTk):
                 'fill': ctk.BOTH
             }
         )
-        dataInputFrame.widget.rowconfigure((0, 1, 2), weight=1)
-
+        
         buttonsFrame = Frame(
             master=createUserFrame.widget,
             container=createUserFrame._children,
@@ -297,7 +298,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'fg_color': "gray46"
+                'fg_color': "transparent"
             },
             position_params={
                 'padx': self._current_height / 100,
@@ -306,191 +307,246 @@ class App(ctk.CTk):
                 'fill': ctk.BOTH
             }
         )
-        buttonsFrame.widget.columnconfigure((0, 1), weight=1)
+        
+        nameInfoFrame = Frame(
+            master=dataInputFrame.widget,
+            container=dataInputFrame._children,
+            ID='nameInfoFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.TOP,
+                'expand': True,
+                'fill': ctk.BOTH
+            } 
+        )
+
+        localInfoFrame = Frame(
+            master=dataInputFrame.widget,
+            container=dataInputFrame._children,
+            ID='localInfoFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.TOP,
+                'expand': True,
+                'fill': ctk.BOTH
+            } 
+        )
+
+        accountInfoFrame = Frame(
+            master=dataInputFrame.widget,
+            container=dataInputFrame._children,
+            ID='accountInfoFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.TOP,
+                'expand': True,
+                'fill': ctk.BOTH
+            } 
+        )
 
 
         # The widgets
 
-        # nameEntry = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='nameEntry',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'Nombre'
-        #     },
-        #     position_params={
-        #         'row': 0,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # nameEntry.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
-        # lastname1 = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='lastname1',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'Apellido 1'
-        #     },
-        #     position_params={
-        #         'row': 0,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # lastname1.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
-        # lastname2 = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='lastname2',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'Apellido 2'
-        #     },
-        #     position_params={
-        #         'row': 0,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # lastname2.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
-        # postalCode = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='postalCode',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'Código Postal'
-        #     },
-        #     position_params={
-        #         'row': 1,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # postalCode.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
-        # address = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='address',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'Calle'
-        #     },
-        #     position_params={
-        #         'row': 1,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # address.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
-        # email = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='email',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'Correo electrónico'
-        #     },
-        #     position_params={
-        #         'row': 1,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # email.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
-        # phoneNumber = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='phoneNumber',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'Tfno'
-        #     },
-        #     position_params={
-        #         'row': 1,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # phoneNumber.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
-        # idNumber = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='idNumber',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'NIF'
-        #     },
-        #     position_params={
-        #         'row': 2,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # idNumber.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
-        # password = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='password',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'Contraseña'
-        #     },
-        #     position_params={
-        #         'row': 2,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # password.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
-        # repeatPassword = Widget(
-        #     Obj=ctk.CTkEntry,
-        #     master=dataInputFrame.widget,
-        #     container=dataInputFrame.children,
-        #     ID='repeatPassword',
-        #     locator=ctk.CTkBaseClass.grid,
-        #     forgetter=ctk.CTkBaseClass.grid_forget,
-        #     params={
-        #         'placeholder_text': 'Repetir contraseña'
-        #     },
-        #     position_params={
-        #         'row': 2,
-        #         'padx': self._current_width / 100,
-        #         'pady': self._current_height / 100
-        #     }
-        # )
-        # repeatPassword.widget.bind(sequence="<Escape>", command=self.__unfocus)
-
+        nameEntry = Widget(
+            Obj=ctk.CTkEntry,
+            master=nameInfoFrame.widget,
+            container=nameInfoFrame.children,
+            ID='nameEntry',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'Nombre'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT
+            }
+        )
+        
+        lastname1 = Widget(
+            Obj=ctk.CTkEntry,
+            master=nameInfoFrame.widget,
+            container=nameInfoFrame.children,
+            ID='lastname1',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'Apellido 1'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT,
+                'expand': True,
+                'fill': ctk.X
+            }
+        )
+        
+        lastname2 = Widget(
+            Obj=ctk.CTkEntry,
+            master=nameInfoFrame.widget,
+            container=nameInfoFrame.children,
+            ID='lastname2',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'Apellido 2'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT,
+                'expand': True,
+                'fill': ctk.X
+            }
+        )
+        
+        postalCode = Widget(
+            Obj=ctk.CTkEntry,
+            master=localInfoFrame.widget,
+            container=localInfoFrame.children,
+            ID='postalCode',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'Código Postal'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT,
+            }
+        )
+        
+        address = Widget(
+            Obj=ctk.CTkEntry,
+            master=localInfoFrame.widget,
+            container=localInfoFrame.children,
+            ID='address',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'Calle'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT,
+                'expand': True,
+                'fill': ctk.X
+            }
+        )
+        
+        email = Widget(
+            Obj=ctk.CTkEntry,
+            master=localInfoFrame.widget,
+            container=localInfoFrame.children,
+            ID='email',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'Correo electrónico'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT,
+                'expand': True,
+                'fill': ctk.X
+            }
+        )
+        
+        phoneNumber = Widget(
+            Obj=ctk.CTkEntry,
+            master=localInfoFrame.widget,
+            container=localInfoFrame.children,
+            ID='phoneNumber',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'Tfno'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT,
+            }
+        )
+        
+        idNumber = Widget(
+            Obj=ctk.CTkEntry,
+            master=accountInfoFrame.widget,
+            container=accountInfoFrame.children,
+            ID='idNumber',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'NIF'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT,
+            }
+        )
+        
+        password = Widget(
+            Obj=ctk.CTkEntry,
+            master=accountInfoFrame.widget,
+            container=accountInfoFrame.children,
+            ID='password',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'Contraseña'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT,
+                'expand': True,
+                'fill': ctk.X
+            }
+        )
+        
+        repeatPassword = Widget(
+            Obj=ctk.CTkEntry,
+            master=accountInfoFrame.widget,
+            container=accountInfoFrame.children,
+            ID='repeatPassword',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'placeholder_text': 'Repetir contraseña'
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT,
+                'expand': True,
+                'fill': ctk.X
+            }
+        )
+        
         createButton = Widget(
             Obj=ctk.CTkButton,
             master=buttonsFrame.widget,
@@ -556,4 +612,3 @@ class App(ctk.CTk):
 
         self.__initialize_main()
         
-
