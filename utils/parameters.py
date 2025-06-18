@@ -3,7 +3,7 @@
 from pathlib import Path
 
 # Window related
-WINDOW_WIDTH = 800
+WINDOW_WIDTH = 900
 WINDOW_HEIGHT = 400
 
 

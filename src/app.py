@@ -65,7 +65,7 @@ class App(ctk.CTk):
 
     def __initialize_main(self) -> None:
 
-        def change_to_login(event=None) -> None:
+        def log_out(event=None) -> None:
             self._children['mainFrame'].hide()
             self._children['logInFrame'].show()
 
@@ -89,8 +89,7 @@ class App(ctk.CTk):
                 'expand': True, # expand when window is resized
                 'padx': self._current_height / 100,
                 'pady': self._current_height / 100
-            },
-            active=True
+            }
         )
         
         logInButton = Widget(
@@ -101,15 +100,14 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': change_to_login,
-                'text': 'Iniciar sesión'
+                'command': log_out,
+                'text': 'Cerrar sesión'
             },
             position_params={
                 'side': ctk.TOP,
                 'anchor': ctk.CENTER,
                 'pady': (self._current_height / 3, 0)
-            },
-            active=True
+            }
         )
         
         addStaffButton = Widget(
@@ -130,25 +128,25 @@ class App(ctk.CTk):
                 'side': ctk.BOTTOM,
                 'anchor': ctk.CENTER,
                 'pady': (0, self._current_height / 3)
-            },
-            active=True
+            }
         )
 
 
     def __initialize_login(self) -> None:
 
-        def add_log(event=None, frame: Frame = None) -> None:
-            '''
-            Tries to log, checking if everything is valid
-
-            :params (Any, Default=None) e: The event which triggered this method
-            '''
-
-            text = frame.children['personalCodeEntry'].get()
-            num = frame.children['idEntry'].get()
+        def log_in(event=None, frame: Frame = None) -> None:
 
             try:
-                Manager.add_entry(num, text)
+                passwd = frame.children['personalCodeEntry'].get()
+                idNum = frame.children['idEntry'].get()
+
+                Manager.log_in(idNum, passwd)
+
+                self._children['logInFrame'].hide()
+                self._children['mainFrame'].show()
+
+            except Manager.EmptyEntry as e:
+                print(e)
 
             except Manager.InvalidID as e:
                 print(e)
@@ -162,7 +160,7 @@ class App(ctk.CTk):
             self.__unfocus(event)
 
         
-        # The frame with all the login stuff
+        # The frame containing everything
         logInFrame = Frame(
             master=self,
             container=self._children,
@@ -177,76 +175,111 @@ class App(ctk.CTk):
                 'expand': True, # expand when window is resized
                 'padx': self._current_height / 100,
                 'pady': self._current_height / 100
-            }
+            },
+            active=True
+        )
+
+        # The frame with the widgets
+        containerFrame = Frame(
+            master=logInFrame.widget,
+            container=logInFrame.children,
+            ID='containerFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'expand': True, # expand when window is resized
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
+            },
+            active=True
         )
 
         # The entry for the ID number
-        idEntry = Widget(
+        Widget(
             Obj=ctk.CTkEntry,
-            master=logInFrame.widget,
-            container=logInFrame.children,
+            master=containerFrame.widget,
+            container=containerFrame.children,
             ID='idEntry',
-            locator=ctk.CTkBaseClass.grid,
-            forgetter=ctk.CTkBaseClass.grid_forget,
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'placeholder_text': 'Introducir el DNI',
-                'width': 200
+                'justify': ctk.CENTER,
+                'width': WINDOW_WIDTH / 3,
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'row': 0,
-                'column': 0,
-                'rowspan': 2,
+                'side': ctk.TOP,
+                'anchor': ctk.CENTER,
                 'padx': self._current_width / 100,
                 'pady': self._current_height / 100
-            }
+            },
+            active=True
         )
         
         # The entry for the personal code
-        codeEntry = Widget(
+        Widget(
             Obj=ctk.CTkEntry,
-            master=logInFrame.widget,
-            container=logInFrame.children,
+            master=containerFrame.widget,
+            container=containerFrame.children,
             ID='personalCodeEntry',
-            locator=ctk.CTkBaseClass.grid,
-            forgetter=ctk.CTkBaseClass.grid_forget,
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'placeholder_text': 'Introducir el código',
-                'width': 200
+                'justify': ctk.CENTER,
+                'width': WINDOW_WIDTH / 3,
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'row': 1,
-                'column': 0,
-                'rowspan': 2,
-                'padx': self._current_width / 25,
-                'pady': self._current_height / 25
-            }
+                'side': ctk.TOP,
+                'anchor': ctk.CENTER,
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100
+            },
+            active=True
         )
         
         # The button which checks the code
         Widget(
             Obj=ctk.CTkButton,
-            master=logInFrame.widget,
-            container=logInFrame.children,
+            master=containerFrame.widget,
+            container=containerFrame.children,
             ID='personalCodeChecker',
-            locator=ctk.CTkBaseClass.grid,
-            forgetter=ctk.CTkBaseClass.grid_forget,
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': lambda: add_log(frame=logInFrame),
-                'text': 'Comprobar'
+                'command': lambda: log_in(frame=containerFrame),
+                'text': 'Comprobar',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'row': 0,
-                'column': 1,
+                'side': ctk.TOP,
+                'anchor': ctk.CENTER,
                 'padx': self._current_width / 25,
                 'pady': self._current_height / 25
-            }
+            },
+            active=True
         )
 
 
     def __initialize_create(self) -> None:
 
-        def createUser() -> None:
-            print('Usuario creado!')
+        def createUser(*entries) -> None:
+            try:
+                Manager.add_worker(*[entry.get() for entry in entries])
+            except Manager.UnmatchingPassword as e:
+                print(e)
+            except Manager.AlreadyExistingID as e:
+                print(e)
+            except Manager.AlreadyExistingPhone as e:
+                print(e)
 
 
         def cancel() -> None:
@@ -373,7 +406,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'Nombre'
+                'placeholder_text': 'Nombre',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -382,7 +417,7 @@ class App(ctk.CTk):
             }
         )
         
-        lastname1 = Widget(
+        lastname1Entry = Widget(
             Obj=ctk.CTkEntry,
             master=nameInfoFrame.widget,
             container=nameInfoFrame.children,
@@ -390,7 +425,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'Apellido 1'
+                'placeholder_text': 'Apellido 1',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -401,7 +438,7 @@ class App(ctk.CTk):
             }
         )
         
-        lastname2 = Widget(
+        lastname2Entry = Widget(
             Obj=ctk.CTkEntry,
             master=nameInfoFrame.widget,
             container=nameInfoFrame.children,
@@ -409,7 +446,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'Apellido 2'
+                'placeholder_text': 'Apellido 2',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -420,7 +459,7 @@ class App(ctk.CTk):
             }
         )
         
-        postalCode = Widget(
+        postalCodeEntry = Widget(
             Obj=ctk.CTkEntry,
             master=localInfoFrame.widget,
             container=localInfoFrame.children,
@@ -428,7 +467,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'Código Postal'
+                'placeholder_text': 'Código Postal',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -437,7 +478,7 @@ class App(ctk.CTk):
             }
         )
         
-        address = Widget(
+        addressEntry = Widget(
             Obj=ctk.CTkEntry,
             master=localInfoFrame.widget,
             container=localInfoFrame.children,
@@ -445,7 +486,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'Calle'
+                'placeholder_text': 'Calle',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -456,7 +499,7 @@ class App(ctk.CTk):
             }
         )
         
-        email = Widget(
+        emailEntry = Widget(
             Obj=ctk.CTkEntry,
             master=localInfoFrame.widget,
             container=localInfoFrame.children,
@@ -464,7 +507,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'Correo electrónico'
+                'placeholder_text': 'Correo electrónico',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -475,7 +520,7 @@ class App(ctk.CTk):
             }
         )
         
-        phoneNumber = Widget(
+        phoneNumberEntry = Widget(
             Obj=ctk.CTkEntry,
             master=localInfoFrame.widget,
             container=localInfoFrame.children,
@@ -483,7 +528,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'Tfno'
+                'placeholder_text': 'Tfno',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -492,7 +539,7 @@ class App(ctk.CTk):
             }
         )
         
-        idNumber = Widget(
+        idNumberEntry = Widget(
             Obj=ctk.CTkEntry,
             master=accountInfoFrame.widget,
             container=accountInfoFrame.children,
@@ -500,7 +547,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'NIF'
+                'placeholder_text': 'NIF',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -509,7 +558,7 @@ class App(ctk.CTk):
             }
         )
         
-        password = Widget(
+        passwordEntry = Widget(
             Obj=ctk.CTkEntry,
             master=accountInfoFrame.widget,
             container=accountInfoFrame.children,
@@ -517,7 +566,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'Contraseña'
+                'placeholder_text': 'Contraseña',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -528,7 +579,7 @@ class App(ctk.CTk):
             }
         )
         
-        repeatPassword = Widget(
+        repeatPasswordEntry = Widget(
             Obj=ctk.CTkEntry,
             master=accountInfoFrame.widget,
             container=accountInfoFrame.children,
@@ -536,7 +587,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'placeholder_text': 'Repetir contraseña'
+                'placeholder_text': 'Repetir contraseña',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
@@ -547,25 +600,7 @@ class App(ctk.CTk):
             }
         )
         
-        createButton = Widget(
-            Obj=ctk.CTkButton,
-            master=buttonsFrame.widget,
-            container=buttonsFrame.children,
-            ID='createButton',
-            locator=ctk.CTkBaseClass.pack,
-            forgetter=ctk.CTkBaseClass.pack_forget,
-            params={
-                'command': createUser,
-                'text': 'Crear'
-            },
-            position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
-                'side': ctk.RIGHT
-            }
-        )
-
-        cancelButton = Widget(
+        cancelButtonEntry = Widget(
             Obj=ctk.CTkButton,
             master=buttonsFrame.widget,
             container=buttonsFrame.children,
@@ -577,12 +612,35 @@ class App(ctk.CTk):
                 'text': 'Cancelar',
                 'border_color': '#1f538d',
                 'border_width': 2,
-                'fg_color': 'gray10'
+                'fg_color': 'gray10',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': self._current_width / 100,
                 'pady': self._current_height / 100,
                 'side': ctk.LEFT
+            }
+        )
+
+        createButtonEntry = Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='createButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': lambda: createUser(nameEntry, lastname1Entry, lastname2Entry, postalCodeEntry, addressEntry,
+                                    emailEntry, phoneNumberEntry, idNumberEntry, passwordEntry, repeatPasswordEntry),
+                'text': 'Crear',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.RIGHT
             }
         )
 
@@ -592,13 +650,6 @@ class App(ctk.CTk):
         Initializes all the required widgets and frames for the application
         '''
 
-        ################
-        # Log-In Stuff #
-        ################
-
-        self.__initialize_login()
-
-
         #####################
         # Create user Stuff #
         #####################
@@ -606,9 +657,15 @@ class App(ctk.CTk):
         self.__initialize_create()
         
 
-        ##################
-        # The main frame #
-        ##################
+        ##############################
+        # The main frame (logged in) #
+        ##############################
 
         self.__initialize_main()
         
+
+        ################
+        # Log-In Stuff #
+        ################
+
+        self.__initialize_login()
