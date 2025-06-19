@@ -12,8 +12,8 @@ class Widget:
     _forget: Any = None
     _active: bool = None
 
-    def __init__(self, Obj: Any, master: Any, container: dict, ID: str, locator: Any,
-        forgetter: Any, params: dict = {}, position_params: dict = {}, active: bool = False):
+    def __init__(self, Obj: Any, master: Any, container: dict, ID: str, locator: Any, forgetter: Any,
+                params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False):
         '''
         Params:
             Obj (Any): The widget class (any of the possible widgets)
@@ -39,17 +39,19 @@ class Widget:
         container[ID] = self
 
         # show directly if wanted
-        if active: self.show()
+        if show: self.show()
 
-    
+
     def show(self) -> None:
 
-        self._locator(self._widget, **self._params)
+        if self._active:
+            self._locator(self._widget, **self._params)
 
 
     def hide(self) -> None:
-
-        self._forget(self._widget)
+        
+        if self._active:
+            self._forget(self._widget)
 
     
     def get(self) -> str | None:
@@ -57,6 +59,14 @@ class Widget:
             return self._widget.get()
         except Exception as e:
             return None
+        
+    
+    def clear(self) -> None:
+        try:
+            if self._widget.get() != '':
+                self._widget.delete(first_index=0, last_index='end')
+        except Exception as e:
+            pass
         
 
     @property
@@ -69,21 +79,16 @@ class Widget:
         return self._params
     
 
-    @property
     def active(self) -> bool:
         return self._active
     
     
-    @active.setter
     def activate(self) -> None:
         self._active = True
-        self.show()
 
 
-    @active.setter
     def deactivate(self) -> None:
         self._active = False
-        self.hide()
     
 
 
@@ -94,8 +99,8 @@ class Frame(Widget):
 
     _children: dict
 
-    def __init__(self, master: Any, container: dict, ID: str, locator: Any,
-        forgetter: Any, params: dict = {}, position_params: dict = {}, active: bool = False):
+    def __init__(self, master: Any, container: dict, ID: str, locator: Any, forgetter: Any,
+                params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False):
         '''
         Params:
             master (Any): The master of the new widget
@@ -119,8 +124,13 @@ class Frame(Widget):
             forgetter=forgetter,
             params=params,
             position_params=position_params,
-            active=active
+            active=active,
+            show=show
         )
+
+
+    def __getitem__(self, key):
+        return self._children[key]
 
 
     @property
@@ -130,7 +140,8 @@ class Frame(Widget):
 
     def show(self) -> None:
 
-        self._locator(self._widget, **self._params)
+        if self._active:
+            self._locator(self._widget, **self._params)
 
         for k, w in self._children.items():
             w.show()
@@ -138,7 +149,9 @@ class Frame(Widget):
 
     def hide(self) -> None:
 
-        self._forget(self._widget)
-
         for k, w in self._children.items():
             w.hide()
+
+        if self._active:
+            self._forget(self._widget)
+

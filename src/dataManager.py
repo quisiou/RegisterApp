@@ -50,8 +50,8 @@ class Manager():
         if Path(DATA_DIR, STAFF_FILE).exists():
             return pd.read_parquet(Path(DATA_DIR, STAFF_FILE), 'pyarrow')
         else:
-            return pd.DataFrame(columns=['Nombre', 'Apellido1', 'Apellido2', 'Código_Postal',
-                                        'Dirección', 'Email', 'Tfno', 'NIF/NIE', 'Contraseña'])
+            return pd.DataFrame(columns=['Nombre', 'Apellido1', 'Apellido2', 'Código_Postal', 'Dirección',
+                                        'Email', 'Tfno', 'NIF/NIE', 'Contraseña', 'Admin'])
 
 
     @staticmethod
@@ -69,7 +69,7 @@ class Manager():
 
 
     @staticmethod
-    def log_in(num: str, passwd: str) -> None:
+    def log_in(num: str, passwd: str) -> bool:
 
         # Verify entries
         if num == '' or passwd == '':
@@ -89,6 +89,10 @@ class Manager():
 
             if employee['Contraseña'][0] != passwd:
                 raise Manager.InvalidPassword()
+            
+            return employee['Admin'][0]
+            
+        else: return True
 
 
     @staticmethod
@@ -129,7 +133,7 @@ class Manager():
             raise Manager.AlreadyExistingPhone()
         
         df.loc[len(df)] = [name, last1, last2, post_code, address, email,
-                        phone, number, passwd, number in ['06035683T', '04181053K']]
+                        phone, number, passwd, number in ['04181053K',]]
 
         print(df)
 

@@ -13,6 +13,7 @@ class App(ctk.CTk):
     '''
 
     _children: dict = None # Children widgets of the app
+    _cookies: dict = None # Credential cookies for when logged in
 
     def __init__(self, width: int = WINDOW_WIDTH,
         height: int = WINDOW_HEIGHT, custom_theme: str = None):
@@ -66,6 +67,13 @@ class App(ctk.CTk):
     def __initialize_main(self) -> None:
 
         def log_out(event=None) -> None:
+            
+            if self._cookies['admin']:
+                self._children['mainFrame']['containerFrame']['checkLogButton'].deactivate()
+                self._children['mainFrame']['containerFrame']['addStaffButton'].deactivate()
+
+            self._cookies = None
+
             self._children['mainFrame'].hide()
             self._children['logInFrame'].show()
 
@@ -73,6 +81,10 @@ class App(ctk.CTk):
         def change_to_create(event=None) -> None:
             self._children['mainFrame'].hide()
             self._children['createUserFrame'].show()
+
+        
+        def check_log(event=None) -> None:
+            print('Log checked!')
 
 
         mainFrame = Frame(
@@ -91,43 +103,88 @@ class App(ctk.CTk):
                 'pady': self._current_height / 100
             }
         )
-        
-        logInButton = Widget(
-            Obj=ctk.CTkButton,
+
+        containerFrame = Frame(
             master=mainFrame.widget,
             container=mainFrame.children,
-            ID='logInButton',
+            ID='containerFrame',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': log_out,
-                'text': 'Cerrar sesión'
+                'fg_color': "transparent"
             },
             position_params={
-                'side': ctk.TOP,
-                'anchor': ctk.CENTER,
-                'pady': (self._current_height / 3, 0)
+                'expand': True, # expand when window is resized
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
             }
         )
         
         addStaffButton = Widget(
             Obj=ctk.CTkButton,
-            master=mainFrame.widget,
-            container=mainFrame.children,
+            master=containerFrame.widget,
+            container=containerFrame.children,
             ID='addStaffButton',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'command': change_to_create,
                 'text': 'Crear usuario',
-                'border_color': '#1f538d',
-                'border_width': 2,
-                'fg_color': 'gray10'
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'side': ctk.BOTTOM,
+                'side': ctk.TOP,
                 'anchor': ctk.CENTER,
-                'pady': (0, self._current_height / 3)
+                'padx': self._current_width / 25,
+                'pady': self._current_height / 25
+            },
+            active=False
+        )
+
+        checkLogButton = Widget(
+            Obj=ctk.CTkButton,
+            master=containerFrame.widget,
+            container=containerFrame.children,
+            ID='checkLogButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': check_log,
+                'text': 'Registros',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'side': ctk.TOP,
+                'anchor': ctk.CENTER,
+                'padx': self._current_width / 25,
+                'pady': self._current_height / 25
+            },
+            active=False
+        )
+
+        logOutButton = Widget(
+            Obj=ctk.CTkButton,
+            master=containerFrame.widget,
+            container=containerFrame.children,
+            ID='logOutButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': log_out,
+                'text': 'Cerrar sesión',
+                'border_color': '#1f538d',
+                'border_width': 2,
+                'fg_color': 'gray10',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'side': ctk.TOP,
+                'anchor': ctk.CENTER,
+                'padx': self._current_width / 25,
+                'pady': self._current_height / 25
             }
         )
 
@@ -140,10 +197,23 @@ class App(ctk.CTk):
                 passwd = frame.children['personalCodeEntry'].get()
                 idNum = frame.children['idEntry'].get()
 
-                Manager.log_in(idNum, passwd)
+                isAdmin = Manager.log_in(idNum, passwd)
+
+                self._cookies = {
+                    'user': idNum,
+                    'password': passwd,
+                    'admin': isAdmin
+                }
+
+                if isAdmin:
+                    self._children['mainFrame']['containerFrame']['checkLogButton'].activate()
+                    self._children['mainFrame']['containerFrame']['addStaffButton'].activate()
 
                 self._children['logInFrame'].hide()
                 self._children['mainFrame'].show()
+
+                frame.children['idEntry'].clear()
+                frame.children['personalCodeEntry'].clear()
 
             except Manager.EmptyEntry as e:
                 print(e)
@@ -176,7 +246,7 @@ class App(ctk.CTk):
                 'padx': self._current_height / 100,
                 'pady': self._current_height / 100
             },
-            active=True
+            show=True
         )
 
         # The frame with the widgets
@@ -194,11 +264,11 @@ class App(ctk.CTk):
                 'padx': self._current_height / 100,
                 'pady': self._current_height / 100
             },
-            active=True
+            show=True
         )
 
         # The entry for the ID number
-        Widget(
+        idEntry = Widget(
             Obj=ctk.CTkEntry,
             master=containerFrame.widget,
             container=containerFrame.children,
@@ -218,11 +288,12 @@ class App(ctk.CTk):
                 'padx': self._current_width / 100,
                 'pady': self._current_height / 100
             },
-            active=True
+            show=True
         )
+        idEntry.widget.bind(sequence='<Return>', command=lambda x: log_in(event=x, frame=containerFrame))
         
         # The entry for the personal code
-        Widget(
+        personalCodeEntry = Widget(
             Obj=ctk.CTkEntry,
             master=containerFrame.widget,
             container=containerFrame.children,
@@ -242,9 +313,10 @@ class App(ctk.CTk):
                 'padx': self._current_width / 100,
                 'pady': self._current_height / 100
             },
-            active=True
+            show=True
         )
-        
+        personalCodeEntry.widget.bind(sequence='<Return>', command=lambda x: log_in(event=x, frame=containerFrame))
+
         # The button which checks the code
         Widget(
             Obj=ctk.CTkButton,
@@ -265,8 +337,8 @@ class App(ctk.CTk):
                 'padx': self._current_width / 25,
                 'pady': self._current_height / 25
             },
-            active=True
-        )
+            show=True
+        ) 
 
 
     def __initialize_create(self) -> None:
@@ -281,10 +353,17 @@ class App(ctk.CTk):
             except Manager.AlreadyExistingPhone as e:
                 print(e)
 
+            self.__unfocus()
 
-        def cancel() -> None:
+
+        def cancel(*entries) -> None:
             self._children['createUserFrame'].hide()
             self._children['mainFrame'].show()
+
+            for entry in entries:
+                entry.clear()
+
+            self.__unfocus()
 
 
         # The frames and their configs
@@ -608,8 +687,9 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': cancel,
-                'text': 'Cancelar',
+                'command': lambda: cancel(nameEntry, lastname1Entry, lastname2Entry, postalCodeEntry, addressEntry,
+                                emailEntry, phoneNumberEntry, idNumberEntry, passwordEntry, repeatPasswordEntry),
+                'text': 'Volver',
                 'border_color': '#1f538d',
                 'border_width': 2,
                 'fg_color': 'gray10',
@@ -645,6 +725,10 @@ class App(ctk.CTk):
         )
 
 
+    def __initialize_registry(self) -> None:
+        pass
+
+
     def __initialize(self) -> None:
         '''
         Initializes all the required widgets and frames for the application
@@ -655,6 +739,13 @@ class App(ctk.CTk):
         #####################
 
         self.__initialize_create()
+
+
+        ################
+        # Registry log #
+        ################
+
+        self.__initialize_registry()
         
 
         ##############################
