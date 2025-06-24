@@ -75,6 +75,9 @@ class App(ctk.CTk):
                 self._children['mainFrame']['containerFrame']['checkLogButton'].deactivate()
                 self._children['mainFrame']['containerFrame']['addStaffButton'].deactivate()
 
+            else:
+                self._children['mainFrame']['containerFrame']['addLogButton'].deactivate()
+
             self._cookies = None
 
 
@@ -85,6 +88,20 @@ class App(ctk.CTk):
         
         def check_log(event=None) -> None:
             print('Log checked!')
+
+
+        def add_log(event=None) -> None:
+
+            if Manager.begin_shift(self._cookies['user']):
+                self._children['mainFrame']['containerFrame']['addLogButton'].widget.configure(text="Finalizar jornada")
+                print('Comienza Jornada!')
+
+            else:
+                self._children['mainFrame']['containerFrame']['addLogButton'].widget.configure(text="Comenzar jornada")
+                print('Finaliza Jornada!')
+
+            Manager.add_entry(self._cookies['user'])
+            
 
 
         mainFrame = Frame(
@@ -164,6 +181,28 @@ class App(ctk.CTk):
             active=False
         )
 
+        addLogButton = Widget(
+            Obj=ctk.CTkButton,
+            master=containerFrame.widget,
+            container=containerFrame.children,
+            ID='addLogButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': add_log,
+                'text': 'Comenzar jornada',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'side': ctk.TOP,
+                'anchor': ctk.CENTER,
+                'padx': self._current_width / 25,
+                'pady': self._current_height / 25
+            },
+            active=False
+        )
+
         logOutButton = Widget(
             Obj=ctk.CTkButton,
             master=containerFrame.widget,
@@ -210,6 +249,16 @@ class App(ctk.CTk):
                 if isAdmin:
                     self._children['mainFrame']['containerFrame']['checkLogButton'].activate()
                     self._children['mainFrame']['containerFrame']['addStaffButton'].activate()
+
+                else:
+                    starts = Manager.begin_shift(idNum)
+                    self._children['mainFrame']['containerFrame']['addLogButton'].activate()
+
+                    if starts:
+                        self._children['mainFrame']['containerFrame']['addLogButton'].widget.configure(text="Comenzar jornada")
+
+                    else:
+                        self._children['mainFrame']['containerFrame']['addLogButton'].widget.configure(text="Finalizar jornada")
 
                 self._children['logInFrame'].hide()
                 self._children['mainFrame'].show()

@@ -59,7 +59,7 @@ class Widget:
             return self._widget.get()
         except Exception as e:
             return None
-        
+           
     
     def clear(self) -> None:
         try:

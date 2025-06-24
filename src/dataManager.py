@@ -142,7 +142,22 @@ class Manager():
     
 
     @staticmethod
-    def add_entry(number: str, password: str) -> None:
+    def begin_shift(number: str) -> bool:
+        '''
+        Checks whether a shift is starting or ending
+
+        :params (str) number: ID card number
+
+        :returns output (bool): `True` if the shift is starting, `False` otherwise
+        '''
+        
+        logs = Manager.__get_log_info()
+
+        return len(logs[logs['NIF/NIE'] == number]) % 2 == 0
+
+
+    @staticmethod
+    def add_entry(number: str) -> bool:
         '''
         Adds a new log to the dataframe
 
@@ -161,17 +176,16 @@ class Manager():
         if employee is None:
             raise Manager.NotFoundID()
 
-        if employee['Contraseña'][0] != password:
-            raise Manager.InvalidPassword()
-
         logs = Manager.__get_log_info()
         dt = str(datetime.now()).split()
+
+        startShift = Manager.begin_shift(number)
 
         logs.loc[len(logs)] = [
             number,
             dt[0],
             dt[1].split('.')[0],
-            'Inicio' if len(logs[logs['NIF/NIE'] == number]) % 2 == 0 else 'Fin'
+            'Inicio' if startShift else 'Fin'
         ]
 
         logs.to_parquet(Path(DATA_DIR, LOG_FILE), engine='pyarrow')
