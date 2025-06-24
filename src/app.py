@@ -4,7 +4,7 @@ from src.dataManager import Manager
 
 from pathlib import Path
 
-from src.widget import Widget, Frame
+from src.widget import *
 from utils.parameters import *
 
 class App(ctk.CTk):
@@ -87,7 +87,10 @@ class App(ctk.CTk):
 
         
         def check_log(event=None) -> None:
-            print('Log checked!')
+            self._cookies['page'] = 0
+
+            self._children['mainFrame'].hide()
+            self._children['registryFrame'].show()
 
 
         def add_log(event=None) -> None:
@@ -135,7 +138,7 @@ class App(ctk.CTk):
             }
         )
         
-        addStaffButton = Widget(
+        Widget(
             Obj=ctk.CTkButton,
             master=containerFrame.widget,
             container=containerFrame.children,
@@ -157,7 +160,7 @@ class App(ctk.CTk):
             active=False
         )
 
-        checkLogButton = Widget(
+        Widget(
             Obj=ctk.CTkButton,
             master=containerFrame.widget,
             container=containerFrame.children,
@@ -179,7 +182,7 @@ class App(ctk.CTk):
             active=False
         )
 
-        addLogButton = Widget(
+        Widget(
             Obj=ctk.CTkButton,
             master=containerFrame.widget,
             container=containerFrame.children,
@@ -201,7 +204,7 @@ class App(ctk.CTk):
             active=False
         )
 
-        logOutButton = Widget(
+        Widget(
             Obj=ctk.CTkButton,
             master=containerFrame.widget,
             container=containerFrame.children,
@@ -748,7 +751,7 @@ class App(ctk.CTk):
             }
         )
 
-        cancelButtonEntry = Widget(
+        Widget(
             Obj=ctk.CTkButton,
             master=buttonsFrame.widget,
             container=buttonsFrame.children,
@@ -772,7 +775,7 @@ class App(ctk.CTk):
             }
         )
 
-        createButtonEntry = Widget(
+        Widget(
             Obj=ctk.CTkButton,
             master=buttonsFrame.widget,
             container=buttonsFrame.children,
@@ -795,7 +798,143 @@ class App(ctk.CTk):
 
 
     def __initialize_registry(self) -> None:
-        pass
+
+        def cancel(event=None) -> None:
+            self._children['registryFrame'].hide()
+            self._children['mainFrame'].show()
+
+            self.__unfocus()
+
+
+        def add_entries(event=None) -> int:
+            pass
+
+
+        def change_page(event=None, inc=None) -> None:
+            self._cookies['page'] += inc
+            print(self._cookies)
+
+        
+        # The frame containing everything
+        registryFrame = Frame(
+            master=self,
+            container=self._children,
+            ID='registryFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'fill': ctk.BOTH, # Fill all the assigned space in the container
+                'expand': True, # expand when window is resized
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
+            }
+        )
+
+        scrollableFrame = Widget(
+            Obj=ctk.CTkScrollableFrame,
+            master=registryFrame.widget,
+            container=registryFrame.children,
+            ID='scrollableFrame',
+            locator=ctk.CTkScrollableFrame.pack,
+            forgetter=ctk.CTkScrollableFrame.pack_forget,
+            params={
+                'orientation': 'vertical',
+                'label_font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold'),
+                'fg_color': "gray12"
+            },
+            position_params={
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.TOP,
+                'expand': True,
+                'fill': ctk.BOTH
+            }
+        )
+
+        add_entries()
+
+        buttonsFrame = Frame(
+            master=registryFrame.widget,
+            container=registryFrame._children,
+            ID='buttonsFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "gray45"
+            },
+            position_params={
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.TOP,
+                'fill': ctk.BOTH
+            }
+        )
+
+        Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='cancelButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': cancel,
+                'text': 'Volver',
+                'border_color': '#1f538d',
+                'border_width': 2,
+                'fg_color': 'gray10',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT
+            }
+        )
+
+        Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='nextPageButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': lambda: change_page(inc=1),
+                'text': 'Next',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.RIGHT
+            }
+        )
+
+        Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='prevPageButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': lambda: change_page(inc=-1),
+                'text': 'Prev',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.RIGHT
+            }
+        )
 
 
     def __initialize(self) -> None:

@@ -1,4 +1,4 @@
-from customtkinter import CTkBaseClass, CTkFrame
+from customtkinter import CTkBaseClass, CTkFrame, CTkScrollableFrame
 from typing import Any
 
 class Widget:
@@ -97,7 +97,7 @@ class Frame(Widget):
     Frame widget, derived from global `Widget` class
     '''
 
-    _children: dict
+    _children: dict = None
 
     def __init__(self, master: Any, container: dict, ID: str, locator: Any, forgetter: Any,
                 params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False):
