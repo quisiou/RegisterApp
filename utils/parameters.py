@@ -11,3 +11,7 @@ WINDOW_HEIGHT = 400
 DATA_DIR = Path(Path.cwd(), 'data')
 LOG_FILE = 'log.parquet'
 STAFF_FILE = 'empleados.parquet'
+
+
+# General stuff
+SHOW_PASSWORD = '*'

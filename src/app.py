@@ -67,15 +67,15 @@ class App(ctk.CTk):
     def __initialize_main(self) -> None:
 
         def log_out(event=None) -> None:
-            
+
+            self._children['mainFrame'].hide()
+            self._children['logInFrame'].show()
+
             if self._cookies['admin']:
                 self._children['mainFrame']['containerFrame']['checkLogButton'].deactivate()
                 self._children['mainFrame']['containerFrame']['addStaffButton'].deactivate()
 
             self._cookies = None
-
-            self._children['mainFrame'].hide()
-            self._children['logInFrame'].show()
 
 
         def change_to_create(event=None) -> None:
@@ -205,6 +205,8 @@ class App(ctk.CTk):
                     'admin': isAdmin
                 }
 
+                print(self._cookies)
+
                 if isAdmin:
                     self._children['mainFrame']['containerFrame']['checkLogButton'].activate()
                     self._children['mainFrame']['containerFrame']['addStaffButton'].activate()
@@ -302,6 +304,7 @@ class App(ctk.CTk):
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'placeholder_text': 'Introducir el código',
+                'show': SHOW_PASSWORD,
                 'justify': ctk.CENTER,
                 'width': WINDOW_WIDTH / 3,
                 'height': WINDOW_HEIGHT / 10,
