@@ -1,5 +1,8 @@
-from customtkinter import CTkBaseClass, CTkFrame, CTkScrollableFrame
+from customtkinter import CTkBaseClass, CTkFrame
+
 from typing import Any
+
+from src.dataManager import Manager
 
 class Widget:
     '''
@@ -154,4 +157,3 @@ class Frame(Widget):
 
         if self._active:
             self._forget(self._widget)
-

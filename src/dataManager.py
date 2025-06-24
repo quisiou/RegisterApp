@@ -55,7 +55,7 @@ class Manager():
 
 
     @staticmethod
-    def __get_log_info() -> pd.DataFrame:
+    def get_log_info(start=0, size=None, as_list=False) -> pd.DataFrame:
         '''
         Retrieves (or creates) the dataframe containing the registry
 
@@ -63,9 +63,28 @@ class Manager():
         '''
 
         if Path(DATA_DIR, LOG_FILE).exists():
-            return pd.read_parquet(Path(DATA_DIR, LOG_FILE), 'pyarrow')
+            df = pd.read_parquet(Path(DATA_DIR, LOG_FILE), 'pyarrow')
+
         else:
-            return pd.DataFrame(columns=['NIF/NIE', 'Día', 'Hora', 'Jornada'])
+            df = pd.DataFrame(columns=['NIF/NIE', 'Día', 'Hora', 'Jornada'])
+
+        if size is None:
+            size = len(df)
+
+        res_df = df[min(start, 0) : min(start + size, len(df))]
+
+        if as_list:
+            return res_df.values.tolist()
+
+        else:
+            return res_df
+
+
+    @staticmethod
+    def get_log_columns() -> tuple:
+        df = Manager.get_log_info()
+
+        return tuple(df.columns)
 
 
     @staticmethod
@@ -87,10 +106,10 @@ class Manager():
             if employee.empty:
                 raise Manager.NotFoundID()
 
-            if employee['Contraseña'][0] != passwd:
+            if list(employee['Contraseña'])[0] != passwd:
                 raise Manager.InvalidPassword()
             
-            return employee['Admin'][0]
+            return list(employee['Admin'])[0]
             
         else: return True
 
@@ -149,7 +168,7 @@ class Manager():
         :returns output (bool): `True` if the shift is starting, `False` otherwise
         '''
         
-        logs = Manager.__get_log_info()
+        logs = Manager.get_log_info()
 
         return len(logs[logs['NIF/NIE'] == number]) % 2 == 0
 
@@ -174,7 +193,7 @@ class Manager():
         if employee is None:
             raise Manager.NotFoundID()
 
-        logs = Manager.__get_log_info()
+        logs = Manager.get_log_info()
         dt = str(datetime.now()).split()
 
         startShift = Manager.begin_shift(number)

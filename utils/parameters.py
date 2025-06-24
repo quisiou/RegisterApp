@@ -15,3 +15,4 @@ STAFF_FILE = 'empleados.parquet'
 
 # General stuff
 SHOW_PASSWORD = '*'
+PAGE_SIZE = 2

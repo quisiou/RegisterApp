@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tkinter.ttk import Treeview
 
 from src.dataManager import Manager
 
@@ -35,6 +36,7 @@ class App(ctk.CTk):
 
         # Attributes
         self._children = {}
+        self._cookies = {}
 
         # Binds
         self.bind(sequence="<Escape>", func=self.__unfocus)
@@ -806,13 +808,56 @@ class App(ctk.CTk):
             self.__unfocus()
 
 
+        def show_log_page(event=None, inc=0, page=0) -> None:
+            
+            data = Manager.get_log_info(
+                start=(page + inc) * PAGE_SIZE,
+                size=PAGE_SIZE,
+                as_list=True
+            )
+
+            tree = self._children['registryFrame']['logTable'].widget
+
+            # Delete possible items
+            tree.delete(*tree.get_children())
+
+            for entry in data:
+                tree.insert(
+                    parent='',
+                    index=0, # New rows are inserted at the beginning
+                    values=entry
+                )
+
+
         def add_entries(event=None) -> int:
-            pass
+            colnames = Manager.get_log_columns()
 
+            logTable = Widget(
+                Obj=Treeview,
+                master=registryFrame.widget,
+                container=registryFrame.children,
+                ID='logTable',
+                locator=Treeview.pack,
+                forgetter=Treeview.pack_forget,
+                params={
+                    'columns': colnames,
+                    'show': 'headings'
+                },
+                position_params={
+                    'padx': self._current_width / 100,
+                    'pady': self._current_height / 100,
+                    'side': ctk.TOP,
+                    'expand': True,
+                    'fill': ctk.BOTH
+                }
+            )
+            
+            # Add the column names to the heading
+            for col in colnames:
+                logTable.widget.heading(col, text=col)
 
-        def change_page(event=None, inc=None) -> None:
-            self._cookies['page'] += inc
-            print(self._cookies)
+            # Add the data to the table
+            data = show_log_page()
 
         
         # The frame containing everything
@@ -833,27 +878,6 @@ class App(ctk.CTk):
             }
         )
 
-        scrollableFrame = Widget(
-            Obj=ctk.CTkScrollableFrame,
-            master=registryFrame.widget,
-            container=registryFrame.children,
-            ID='scrollableFrame',
-            locator=ctk.CTkScrollableFrame.pack,
-            forgetter=ctk.CTkScrollableFrame.pack_forget,
-            params={
-                'orientation': 'vertical',
-                'label_font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold'),
-                'fg_color': "gray12"
-            },
-            position_params={
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100,
-                'side': ctk.TOP,
-                'expand': True,
-                'fill': ctk.BOTH
-            }
-        )
-
         add_entries()
 
         buttonsFrame = Frame(
@@ -863,7 +887,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'fg_color': "gray45"
+                'fg_color': "transparent"
             },
             position_params={
                 'padx': self._current_height / 100,
@@ -904,7 +928,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': lambda: change_page(inc=1),
+                'command': lambda: print('Next'),
                 'text': 'Next',
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
@@ -924,7 +948,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': lambda: change_page(inc=-1),
+                'command': lambda: print('Prev'),
                 'text': 'Prev',
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
