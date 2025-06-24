@@ -808,13 +808,9 @@ class App(ctk.CTk):
             self.__unfocus()
 
 
-        def show_log_page(event=None, inc=0, page=0) -> None:
-            
-            data = Manager.get_log_info(
-                start=(page + inc) * PAGE_SIZE,
-                size=PAGE_SIZE,
-                as_list=True
-            )
+        def show_log(event=None) -> None:
+
+            data = Manager.get_log_info(as_list=True)
 
             tree = self._children['registryFrame']['logTable'].widget
 
@@ -857,7 +853,7 @@ class App(ctk.CTk):
                 logTable.widget.heading(col, text=col)
 
             # Add the data to the table
-            data = show_log_page()
+            show_log()
 
         
         # The frame containing everything
@@ -917,46 +913,6 @@ class App(ctk.CTk):
                 'padx': self._current_width / 100,
                 'pady': self._current_height / 100,
                 'side': ctk.LEFT
-            }
-        )
-
-        Widget(
-            Obj=ctk.CTkButton,
-            master=buttonsFrame.widget,
-            container=buttonsFrame.children,
-            ID='nextPageButton',
-            locator=ctk.CTkBaseClass.pack,
-            forgetter=ctk.CTkBaseClass.pack_forget,
-            params={
-                'command': lambda: print('Next'),
-                'text': 'Next',
-                'height': WINDOW_HEIGHT / 10,
-                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
-            },
-            position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
-                'side': ctk.RIGHT
-            }
-        )
-
-        Widget(
-            Obj=ctk.CTkButton,
-            master=buttonsFrame.widget,
-            container=buttonsFrame.children,
-            ID='prevPageButton',
-            locator=ctk.CTkBaseClass.pack,
-            forgetter=ctk.CTkBaseClass.pack_forget,
-            params={
-                'command': lambda: print('Prev'),
-                'text': 'Prev',
-                'height': WINDOW_HEIGHT / 10,
-                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
-            },
-            position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
-                'side': ctk.RIGHT
             }
         )
 
