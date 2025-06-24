@@ -98,7 +98,7 @@ class Manager():
     @staticmethod
     def add_worker(name: str, last1: str, last2: str,
         post_code: str, address: str, email: str, phone: str,
-        number: str, passwd: str, re_passwd: str) -> None:
+        number: str, passwd: str, re_passwd: str, isAdmin: int) -> None:
         '''
         Adds a new worker's info to the dataframe
 
@@ -133,9 +133,7 @@ class Manager():
             raise Manager.AlreadyExistingPhone()
         
         df.loc[len(df)] = [name, last1, last2, post_code, address, email,
-                        phone, number, passwd, number in ['04181053K',]]
-
-        print(df)
+                        phone, number, passwd, bool(isAdmin)]
 
         # Save data
         df.to_parquet(Path(DATA_DIR, STAFF_FILE), engine='pyarrow')

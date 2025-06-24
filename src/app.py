@@ -94,11 +94,9 @@ class App(ctk.CTk):
 
             if Manager.begin_shift(self._cookies['user']):
                 self._children['mainFrame']['containerFrame']['addLogButton'].widget.configure(text="Finalizar jornada")
-                print('Comienza Jornada!')
 
             else:
                 self._children['mainFrame']['containerFrame']['addLogButton'].widget.configure(text="Comenzar jornada")
-                print('Finaliza Jornada!')
 
             Manager.add_entry(self._cookies['user'])
             
@@ -243,8 +241,6 @@ class App(ctk.CTk):
                     'password': passwd,
                     'admin': isAdmin
                 }
-
-                print(self._cookies)
 
                 if isAdmin:
                     self._children['mainFrame']['containerFrame']['checkLogButton'].activate()
@@ -698,6 +694,7 @@ class App(ctk.CTk):
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'placeholder_text': 'Contraseña',
+                'show': SHOW_PASSWORD,
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
@@ -719,6 +716,7 @@ class App(ctk.CTk):
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'placeholder_text': 'Repetir contraseña',
+                'show': SHOW_PASSWORD,
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
@@ -731,6 +729,25 @@ class App(ctk.CTk):
             }
         )
         
+        adminCheckBox = Widget(
+            Obj=ctk.CTkCheckBox,
+            master=accountInfoFrame.widget,
+            container=accountInfoFrame.children,
+            ID='adminCheckBox',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'text': 'Administrador',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT
+            }
+        )
+
         cancelButtonEntry = Widget(
             Obj=ctk.CTkButton,
             master=buttonsFrame.widget,
@@ -764,7 +781,7 @@ class App(ctk.CTk):
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'command': lambda: createUser(nameEntry, lastname1Entry, lastname2Entry, postalCodeEntry, addressEntry,
-                                    emailEntry, phoneNumberEntry, idNumberEntry, passwordEntry, repeatPasswordEntry),
+                                emailEntry, phoneNumberEntry, idNumberEntry, passwordEntry, repeatPasswordEntry, adminCheckBox),
                 'text': 'Crear',
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
