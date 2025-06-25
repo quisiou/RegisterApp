@@ -108,7 +108,8 @@ class App(ctk.CTk):
             
 
 
-        mainFrame = Frame(
+        mainFrame = Widget(
+            Obj=CTkFrame,
             master=self,
             container=self._children,
             ID='mainFrame',
@@ -125,7 +126,8 @@ class App(ctk.CTk):
             }
         )
 
-        containerFrame = Frame(
+        containerFrame = Widget(
+            Obj=CTkFrame,
             master=mainFrame.widget,
             container=mainFrame.children,
             ID='containerFrame',
@@ -234,7 +236,7 @@ class App(ctk.CTk):
 
     def __initialize_login(self) -> None:
 
-        def log_in(event=None, frame: Frame = None) -> None:
+        def log_in(event=None, frame: Widget = None) -> None:
 
             try:
                 passwd = frame.children['personalCodeEntry'].get()
@@ -275,7 +277,8 @@ class App(ctk.CTk):
 
         
         # The frame containing everything
-        logInFrame = Frame(
+        logInFrame = Widget(
+            Obj=CTkFrame,
             master=self,
             container=self._children,
             ID='logInFrame',
@@ -294,7 +297,8 @@ class App(ctk.CTk):
         )
 
         # The frame with the widgets
-        containerFrame = Frame(
+        containerFrame = Widget(
+            Obj=CTkFrame,
             master=logInFrame.widget,
             container=logInFrame.children,
             ID='containerFrame',
@@ -414,7 +418,8 @@ class App(ctk.CTk):
 
         # The frames and their configs
 
-        createUserFrame = Frame(
+        createUserFrame = Widget(
+            Obj=CTkFrame,
             master=self,
             container=self._children,
             ID='createUserFrame',
@@ -431,7 +436,8 @@ class App(ctk.CTk):
             }
         )
 
-        dataInputFrame = Frame(
+        dataInputFrame = Widget(
+            Obj=CTkFrame,
             master=createUserFrame.widget,
             container=createUserFrame._children,
             ID='dataInputFrame',
@@ -449,7 +455,8 @@ class App(ctk.CTk):
             }
         )
         
-        buttonsFrame = Frame(
+        buttonsFrame = Widget(
+            Obj=CTkFrame,
             master=createUserFrame.widget,
             container=createUserFrame._children,
             ID='buttonsFrame',
@@ -466,7 +473,8 @@ class App(ctk.CTk):
             }
         )
         
-        nameInfoFrame = Frame(
+        nameInfoFrame = Widget(
+            Obj=CTkFrame,
             master=dataInputFrame.widget,
             container=dataInputFrame._children,
             ID='nameInfoFrame',
@@ -484,7 +492,8 @@ class App(ctk.CTk):
             } 
         )
 
-        localInfoFrame = Frame(
+        localInfoFrame = Widget(
+            Obj=CTkFrame,
             master=dataInputFrame.widget,
             container=dataInputFrame._children,
             ID='localInfoFrame',
@@ -502,7 +511,8 @@ class App(ctk.CTk):
             } 
         )
 
-        accountInfoFrame = Frame(
+        accountInfoFrame = Widget(
+            Obj=CTkFrame,
             master=dataInputFrame.widget,
             container=dataInputFrame._children,
             ID='accountInfoFrame',
@@ -850,7 +860,8 @@ class App(ctk.CTk):
 
         
         # The frame containing everything
-        registryFrame = Frame(
+        registryFrame = Widget(
+            Obj=CTkFrame,
             master=self,
             container=self._children,
             ID='registryFrame',
@@ -869,7 +880,8 @@ class App(ctk.CTk):
 
         add_entries()
 
-        buttonsFrame = Frame(
+        buttonsFrame = Widget(
+            Obj=CTkFrame,
             master=registryFrame.widget,
             container=registryFrame._children,
             ID='buttonsFrame',

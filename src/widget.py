@@ -14,6 +14,7 @@ class Widget:
     _locator: Any = None
     _forget: Any = None
     _active: bool = None
+    _children: dict = None
 
     def __init__(self, Obj: Any, master: Any, container: dict, ID: str, locator: Any, forgetter: Any,
                 params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False):
@@ -37,6 +38,7 @@ class Widget:
         self._forget = forgetter
         self._params = position_params
         self._active = active
+        self._children = {}
 
         # add to the container
         container[ID] = self
@@ -45,14 +47,24 @@ class Widget:
         if show: self.show()
 
 
+    def __getitem__(self, key):
+        return self._children[key]
+    
+
     def show(self) -> None:
 
         if self._active:
             self._locator(self._widget, **self._params)
 
+        for k, w in self._children.items():
+            w.show()
+
 
     def hide(self) -> None:
-        
+
+        for k, w in self._children.items():
+            w.hide()
+
         if self._active:
             self._forget(self._widget)
 
@@ -82,6 +94,11 @@ class Widget:
         return self._params
     
 
+    @property
+    def children(self) -> dict:
+        return self._children
+    
+
     def active(self) -> bool:
         return self._active
     
@@ -93,67 +110,3 @@ class Widget:
     def deactivate(self) -> None:
         self._active = False
     
-
-
-class Frame(Widget):
-    '''
-    Frame widget, derived from global `Widget` class
-    '''
-
-    _children: dict = None
-
-    def __init__(self, master: Any, container: dict, ID: str, locator: Any, forgetter: Any,
-                params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False):
-        '''
-        Params:
-            master (Any): The master of the new widget
-            container (dict): The container where the widget will be added
-            ID (str): The identifier of the widget in the container
-            locator (Any): The method to locate the widget on the screen
-            forgetter (Any): The method to hide the widget from the screen
-            params (dict, Default={}): Parameters for the customisation of the widget
-            position_params (dict, Default={}): Parameters for the placement of the widget
-            active (bool, Default=False): Whether to show directly the widget
-        '''
-
-        self._children = {}
-
-        super().__init__(
-            Obj=CTkFrame,
-            master=master,
-            container=container,
-            ID=ID,
-            locator=locator,
-            forgetter=forgetter,
-            params=params,
-            position_params=position_params,
-            active=active,
-            show=show
-        )
-
-
-    def __getitem__(self, key):
-        return self._children[key]
-
-
-    @property
-    def children(self) -> dict:
-        return self._children
-    
-
-    def show(self) -> None:
-
-        if self._active:
-            self._locator(self._widget, **self._params)
-
-        for k, w in self._children.items():
-            w.show()
-
-
-    def hide(self) -> None:
-
-        for k, w in self._children.items():
-            w.hide()
-
-        if self._active:
-            self._forget(self._widget)
