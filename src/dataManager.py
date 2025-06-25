@@ -12,31 +12,31 @@ class Manager():
 
     class NotFoundID(Exception):
         def __init__(self, *args):
-            super().__init__('No employee found on the database matching the ID number')
+            super().__init__('NIF/NIE no encontrado.')
 
     class InvalidID(Exception):
         def __init__(self, *args):
-            super().__init__('Invalid ID format')
+            super().__init__('Formato de NIF/NIE inválido.')
 
     class InvalidPassword(Exception):
         def __init__(self, *args):
-            super().__init__('Invalid password for this employee')
+            super().__init__('Contraseña incorrecta.')
 
     class AlreadyExistingID(Exception):
         def __init__(self, *args):
-            super().__init__('ID number already registered')
+            super().__init__('NIF/NIE ya registrado.')
 
     class AlreadyExistingPhone(Exception):
         def __init__(self, *args):
-            super().__init__('Phone number already registered')
+            super().__init__('Número de teléfono ya registrado.')
 
     class UnmatchingPassword(Exception):
         def __init__(self, *args):
-            super().__init__("Passwords don't match each other")
+            super().__init__("Las contraseñas no coinciden.")
 
     class EmptyEntry(Exception):
         def __init__(self, *args):
-            super().__init__("You must fill out every entry")
+            super().__init__("Debe rellenar todos los campos.")
 
 
     @staticmethod
@@ -88,13 +88,21 @@ class Manager():
 
 
     @staticmethod
+    def __valid_id(num: str) -> bool:
+        is_nif = (len(num) == 9) and (num[:8].isnumeric()) and (num[8].isalpha())
+        is_nie = (len(num) == 9) and (num[1:8].isnumeric()) and (num[8].isalpha()) and (num[0] in ['X', 'Y', 'Z'])
+
+        return is_nif or is_nie
+
+
+    @staticmethod
     def log_in(num: str, passwd: str) -> bool:
 
         # Verify entries
         if num == '' or passwd == '':
             raise Manager.EmptyEntry()
 
-        if len(num) != 9 or not num[8].isalpha() or not num[:8].isnumeric():
+        if not Manager.__valid_id(num):
             raise Manager.InvalidID()
         
         # Validate credentials
@@ -138,7 +146,7 @@ class Manager():
         df = Manager.__get_staff_info()
 
         # Verify entries
-        if len(number) != 9 or not number[8].isalpha() or not number[:8].isnumeric():
+        if not Manager.__valid_id(number):
             raise Manager.InvalidID()
         
         if passwd != re_passwd:
@@ -183,7 +191,7 @@ class Manager():
             password (str): Employee's password
         '''
 
-        if len(number) != 9 or not number[8].isalpha() or not number[:8].isnumeric():
+        if not Manager.__valid_id(number):
             raise Manager.InvalidID()
 
         df = Manager.__get_staff_info()
