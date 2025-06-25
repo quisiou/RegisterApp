@@ -76,6 +76,7 @@ class App(ctk.CTk):
 
             if self._cookies['admin']:
                 self._children['mainFrame']['containerFrame']['checkLogButton'].deactivate()
+                self._children['mainFrame']['containerFrame']['checkStaffButton'].deactivate()
                 self._children['mainFrame']['containerFrame']['addStaffButton'].deactivate()
 
             else:
@@ -90,10 +91,13 @@ class App(ctk.CTk):
 
         
         def check_log(event=None) -> None:
-            self._cookies['page'] = 0
-
             self._children['mainFrame'].hide()
-            self._children['registryFrame'].show()
+            self._children['logRegistryFrame'].show()
+
+        
+        def check_staff(event=None) -> None:
+            self._children['mainFrame'].hide()
+            self._children['staffRegistryFrame'].show()
 
 
         def add_log(event=None) -> None:
@@ -106,7 +110,6 @@ class App(ctk.CTk):
 
             Manager.add_entry(self._cookies['user'])
             
-
 
         mainFrame = Widget(
             Obj=CTkFrame,
@@ -191,6 +194,28 @@ class App(ctk.CTk):
             Obj=ctk.CTkButton,
             master=containerFrame.widget,
             container=containerFrame.children,
+            ID='checkStaffButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': check_staff,
+                'text': 'Personal',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'side': ctk.TOP,
+                'anchor': ctk.CENTER,
+                'padx': self._current_width / 25,
+                'pady': self._current_height / 25
+            },
+            active=False
+        )
+
+        Widget(
+            Obj=ctk.CTkButton,
+            master=containerFrame.widget,
+            container=containerFrame.children,
             ID='addLogButton',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
@@ -252,6 +277,7 @@ class App(ctk.CTk):
 
                 if isAdmin:
                     self._children['mainFrame']['containerFrame']['checkLogButton'].activate()
+                    self._children['mainFrame']['containerFrame']['checkStaffButton'].activate()
                     self._children['mainFrame']['containerFrame']['addStaffButton'].activate()
 
                 else:
@@ -270,7 +296,7 @@ class App(ctk.CTk):
                 frame.children['idEntry'].clear()
                 frame.children['personalCodeEntry'].clear()
 
-            except Exception as e:
+            except Manager.ManagerException as e:
                 messagebox.showerror(message=str(e))
 
             self.__unfocus(event)
@@ -400,7 +426,7 @@ class App(ctk.CTk):
 
                 Manager.add_worker(*[entry.get() for entry in entries])
 
-            except Exception as e:
+            except Manager.ManagerException as e:
                 messagebox.showerror(message=str(e))
 
             self.__unfocus()
@@ -802,10 +828,10 @@ class App(ctk.CTk):
         )
 
 
-    def __initialize_registry(self) -> None:
+    def __initialize_log_registry(self) -> None:
 
         def cancel(event=None) -> None:
-            self._children['registryFrame'].hide()
+            self._children['logRegistryFrame'].hide()
             self._children['mainFrame'].show()
 
             self.__unfocus()
@@ -815,7 +841,7 @@ class App(ctk.CTk):
 
             data = Manager.get_dataframe(as_list=True, path=LOG_FILE)
 
-            tree = self._children['registryFrame']['logTable'].widget
+            tree = self._children['logRegistryFrame']['logTable'].widget
 
             # Delete possible items
             tree.delete(*tree.get_children())
@@ -833,8 +859,8 @@ class App(ctk.CTk):
 
             logTable = Widget(
                 Obj=Treeview,
-                master=registryFrame.widget,
-                container=registryFrame.children,
+                master=logRegistryFrame.widget,
+                container=logRegistryFrame.children,
                 ID='logTable',
                 locator=Treeview.pack,
                 forgetter=Treeview.pack_forget,
@@ -860,11 +886,11 @@ class App(ctk.CTk):
 
         
         # The frame containing everything
-        registryFrame = Widget(
+        logRegistryFrame = Widget(
             Obj=CTkFrame,
             master=self,
             container=self._children,
-            ID='registryFrame',
+            ID='logRegistryFrame',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
@@ -882,8 +908,8 @@ class App(ctk.CTk):
 
         buttonsFrame = Widget(
             Obj=CTkFrame,
-            master=registryFrame.widget,
-            container=registryFrame._children,
+            master=logRegistryFrame.widget,
+            container=logRegistryFrame._children,
             ID='buttonsFrame',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
@@ -925,7 +951,7 @@ class App(ctk.CTk):
     def __initialize_staff_registry(self) -> None:
 
         def cancel(event=None) -> None:
-            self._children['registryFrame'].hide()
+            self._children['staffRegistryFrame'].hide()
             self._children['mainFrame'].show()
 
             self.__unfocus()
@@ -933,9 +959,9 @@ class App(ctk.CTk):
 
         def show_staff(event=None) -> None:
 
-            data = Manager.get_dataframe(as_list=True, path=LOG_FILE)
+            data = Manager.get_dataframe(as_list=True, path=STAFF_FILE)
 
-            tree = self._children['registryFrame']['staffTable'].widget
+            tree = self._children['staffRegistryFrame']['staffTable'].widget
 
             # Delete possible items
             tree.delete(*tree.get_children())
@@ -949,12 +975,12 @@ class App(ctk.CTk):
 
 
         def add_entries(event=None) -> int:
-            colnames = Manager.get_columns(which='logs')
+            colnames = Manager.get_columns(which='staff')
 
             staffTable = Widget(
                 Obj=Treeview,
-                master=registryFrame.widget,
-                container=registryFrame.children,
+                master=staffRegistryFrame.widget,
+                container=staffRegistryFrame.children,
                 ID='staffTable',
                 locator=Treeview.pack,
                 forgetter=Treeview.pack_forget,
@@ -974,17 +1000,18 @@ class App(ctk.CTk):
             # Add the column names to the heading
             for col in colnames:
                 staffTable.widget.heading(col, text=col)
+                staffTable.widget.column(col, stretch='NO', width=self._current_width // 6)
 
             # Add the data to the table
             show_staff()
 
         
         # The frame containing everything
-        registryFrame = Widget(
+        staffRegistryFrame = Widget(
             Obj=CTkFrame,
             master=self,
             container=self._children,
-            ID='registryFrame',
+            ID='staffRegistryFrame',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
@@ -1002,8 +1029,8 @@ class App(ctk.CTk):
 
         buttonsFrame = Widget(
             Obj=CTkFrame,
-            master=registryFrame.widget,
-            container=registryFrame._children,
+            master=staffRegistryFrame.widget,
+            container=staffRegistryFrame._children,
             ID='buttonsFrame',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
@@ -1042,7 +1069,6 @@ class App(ctk.CTk):
         )
 
 
-
     def __initialize(self) -> None:
         '''
         Initializes all the required widgets and frames for the application
@@ -1056,10 +1082,17 @@ class App(ctk.CTk):
 
 
         ################
-        # Registry log #
+        # Log Registry #
         ################
 
-        self.__initialize_registry()
+        self.__initialize_log_registry()
+
+
+        ##################
+        # Staff Registry #
+        ##################
+
+        self.__initialize_staff_registry()
         
 
         ##############################

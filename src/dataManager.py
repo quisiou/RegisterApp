@@ -14,32 +14,36 @@ class Manager():
     of entries in the register's data files.
     '''
 
-    class NotFoundID(Exception):
-        def __init__(self, *args):
+    class ManagerException(Exception):
+        def __init__(self, message: str = ''):
+            super().__init__(message)
+
+    class NotFoundID(ManagerException):
+        def __init__(self):
             super().__init__('NIF/NIE no encontrado.')
 
-    class InvalidID(Exception):
-        def __init__(self, *args):
+    class InvalidID(ManagerException):
+        def __init__(self):
             super().__init__('Formato de NIF/NIE inválido.')
 
-    class InvalidCredentials(Exception):
-        def __init__(self, *args):
+    class InvalidCredentials(ManagerException):
+        def __init__(self):
             super().__init__('Credenciales incorrectas.')
 
-    class AlreadyExistingID(Exception):
-        def __init__(self, *args):
+    class AlreadyExistingID(ManagerException):
+        def __init__(self):
             super().__init__('NIF/NIE ya registrado.')
 
-    class AlreadyExistingPhone(Exception):
-        def __init__(self, *args):
+    class AlreadyExistingPhone(ManagerException):
+        def __init__(self):
             super().__init__('Número de teléfono ya registrado.')
 
-    class UnmatchingPassword(Exception):
-        def __init__(self, *args):
+    class UnmatchingPassword(ManagerException):
+        def __init__(self):
             super().__init__("Las contraseñas no coinciden.")
 
-    class EmptyEntry(Exception):
-        def __init__(self, *args):
+    class EmptyEntry(ManagerException):
+        def __init__(self):
             super().__init__("Debe rellenar todos los campos.")
 
 
@@ -54,8 +58,12 @@ class Manager():
         if Path(DATA_DIR, path).exists():
             df = pd.read_parquet(Path(DATA_DIR, path), 'pyarrow')
 
-        else:
+        elif path == LOG_FILE:
             df = pd.DataFrame(columns=['NIF/NIE', 'Día', 'Hora', 'Jornada'])
+        
+        elif path == STAFF_FILE:
+            df = pd.DataFrame(columns=['Nombre', 'Apellido1', 'Apellido2', 'Código_Postal',
+                                    'Dirección', 'Email', 'Tfno', 'NIF/NIE', 'Contraseña', 'Admin'])
 
         if size is None:
             size = len(df)
@@ -142,7 +150,7 @@ class Manager():
         
         if passwd != re_passwd:
             raise Manager.UnmatchingPassword()
-
+        
         # Verify if new employee
         if number in list(df['NIF/NIE']):
             raise Manager.AlreadyExistingID()
