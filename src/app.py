@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter.ttk import Treeview
+from tkinter import messagebox
 
 from src.dataManager import Manager
 
@@ -267,17 +268,8 @@ class App(ctk.CTk):
                 frame.children['idEntry'].clear()
                 frame.children['personalCodeEntry'].clear()
 
-            except Manager.EmptyEntry as e:
-                print(e)
-
-            except Manager.InvalidID as e:
-                print(e)
-
-            except Manager.NotFoundID as e:
-                print(e)
-
-            except Manager.InvalidPassword as e:
-                print(e)
+            except Exception as e:
+                messagebox.showerror(message=str(e))
 
             self.__unfocus(event)
 
@@ -398,13 +390,14 @@ class App(ctk.CTk):
 
         def createUser(*entries) -> None:
             try:
+                for entry in entries:
+                    if entry.get() == '':
+                        raise Manager.EmptyEntry()
+
                 Manager.add_worker(*[entry.get() for entry in entries])
-            except Manager.UnmatchingPassword as e:
-                print(e)
-            except Manager.AlreadyExistingID as e:
-                print(e)
-            except Manager.AlreadyExistingPhone as e:
-                print(e)
+
+            except Exception as e:
+                messagebox.showerror(message=str(e))
 
             self.__unfocus()
 

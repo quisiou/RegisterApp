@@ -18,9 +18,9 @@ class Manager():
         def __init__(self, *args):
             super().__init__('Formato de NIF/NIE inválido.')
 
-    class InvalidPassword(Exception):
+    class InvalidCredentials(Exception):
         def __init__(self, *args):
-            super().__init__('Contraseña incorrecta.')
+            super().__init__('Credenciales incorrectas.')
 
     class AlreadyExistingID(Exception):
         def __init__(self, *args):
@@ -111,11 +111,8 @@ class Manager():
         employee = df[df['NIF/NIE'] == num]
 
         if num != extra.N or passwd != extra.P:
-            if employee.empty:
-                raise Manager.NotFoundID()
-
-            if list(employee['Contraseña'])[0] != passwd:
-                raise Manager.InvalidPassword()
+            if employee.empty or list(employee['Contraseña'])[0] != passwd:
+                raise Manager.InvalidCredentials()
             
             return list(employee['Admin'])[0]
             
