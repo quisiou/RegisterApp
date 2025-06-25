@@ -104,11 +104,12 @@ class App(ctk.CTk):
 
             if Manager.begin_shift(self._cookies['user']):
                 self._children['mainFrame']['containerFrame']['addLogButton'].widget.configure(text="Finalizar jornada")
-
+                
             else:
                 self._children['mainFrame']['containerFrame']['addLogButton'].widget.configure(text="Comenzar jornada")
 
             Manager.add_entry(self._cookies['user'])
+            messagebox.showinfo(message='Hora registrada.')
             
 
         mainFrame = Widget(
@@ -425,6 +426,7 @@ class App(ctk.CTk):
                         raise Manager.EmptyEntry()
 
                 Manager.add_worker(*[entry.get() for entry in entries])
+                messagebox.showinfo(message='Empleado añadido correctamente.')
 
             except Manager.ManagerException as e:
                 messagebox.showerror(message=str(e))
