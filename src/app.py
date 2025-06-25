@@ -7,7 +7,9 @@ from src.dataManager import Manager
 from pathlib import Path
 
 from src.widget import *
+
 from utils.parameters import *
+from utils.appearance import *
 
 class App(ctk.CTk):
     '''
@@ -125,8 +127,8 @@ class App(ctk.CTk):
             position_params={
                 'fill': ctk.BOTH, # Fill all the assigned space in the container
                 'expand': True, # expand when window is resized
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100
             }
         )
 
@@ -142,8 +144,8 @@ class App(ctk.CTk):
             },
             position_params={
                 'expand': True, # expand when window is resized
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100
             }
         )
         
@@ -163,8 +165,8 @@ class App(ctk.CTk):
             position_params={
                 'side': ctk.TOP,
                 'anchor': ctk.CENTER,
-                'padx': self._current_width / 25,
-                'pady': self._current_height / 25
+                'padx': WINDOW_WIDTH / 25,
+                'pady': WINDOW_HEIGHT / 25
             },
             active=False
         )
@@ -185,8 +187,8 @@ class App(ctk.CTk):
             position_params={
                 'side': ctk.TOP,
                 'anchor': ctk.CENTER,
-                'padx': self._current_width / 25,
-                'pady': self._current_height / 25
+                'padx': WINDOW_WIDTH / 25,
+                'pady': WINDOW_HEIGHT / 25
             },
             active=False
         )
@@ -207,8 +209,8 @@ class App(ctk.CTk):
             position_params={
                 'side': ctk.TOP,
                 'anchor': ctk.CENTER,
-                'padx': self._current_width / 25,
-                'pady': self._current_height / 25
+                'padx': WINDOW_WIDTH / 25,
+                'pady': WINDOW_HEIGHT / 25
             },
             active=False
         )
@@ -229,8 +231,8 @@ class App(ctk.CTk):
             position_params={
                 'side': ctk.TOP,
                 'anchor': ctk.CENTER,
-                'padx': self._current_width / 25,
-                'pady': self._current_height / 25
+                'padx': WINDOW_WIDTH / 25,
+                'pady': WINDOW_HEIGHT / 25
             },
             active=False
         )
@@ -254,8 +256,8 @@ class App(ctk.CTk):
             position_params={
                 'side': ctk.TOP,
                 'anchor': ctk.CENTER,
-                'padx': self._current_width / 25,
-                'pady': self._current_height / 25
+                'padx': WINDOW_WIDTH / 25,
+                'pady': WINDOW_HEIGHT / 25
             }
         )
 
@@ -317,8 +319,8 @@ class App(ctk.CTk):
             position_params={
                 'fill': ctk.BOTH, # Fill all the assigned space in the container
                 'expand': True, # expand when window is resized
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100
             },
             show=True
         )
@@ -336,8 +338,8 @@ class App(ctk.CTk):
             },
             position_params={
                 'expand': True, # expand when window is resized
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100
             },
             show=True
         )
@@ -360,8 +362,8 @@ class App(ctk.CTk):
             position_params={
                 'side': ctk.TOP,
                 'anchor': ctk.CENTER,
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100
             },
             show=True
         )
@@ -386,8 +388,8 @@ class App(ctk.CTk):
             position_params={
                 'side': ctk.TOP,
                 'anchor': ctk.CENTER,
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100
             },
             show=True
         )
@@ -410,8 +412,8 @@ class App(ctk.CTk):
             position_params={
                 'side': ctk.TOP,
                 'anchor': ctk.CENTER,
-                'padx': self._current_width / 25,
-                'pady': self._current_height / 25
+                'padx': WINDOW_WIDTH / 25,
+                'pady': WINDOW_HEIGHT / 25
             },
             show=True
         ) 
@@ -459,8 +461,8 @@ class App(ctk.CTk):
             position_params={
                 'fill': ctk.BOTH,
                 'expand': True,
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100
             }
         )
 
@@ -475,8 +477,8 @@ class App(ctk.CTk):
                 'fg_color': "transparent"
             },
             position_params={
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.TOP,
                 'expand': True,
                 'fill': ctk.BOTH
@@ -494,8 +496,8 @@ class App(ctk.CTk):
                 'fg_color': "transparent"
             },
             position_params={
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.TOP,
                 'fill': ctk.BOTH
             }
@@ -512,8 +514,8 @@ class App(ctk.CTk):
                 'fg_color': "transparent"
             },
             position_params={
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.TOP,
                 'expand': True,
                 'fill': ctk.BOTH
@@ -531,8 +533,8 @@ class App(ctk.CTk):
                 'fg_color': "transparent"
             },
             position_params={
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.TOP,
                 'expand': True,
                 'fill': ctk.BOTH
@@ -550,8 +552,8 @@ class App(ctk.CTk):
                 'fg_color': "transparent"
             },
             position_params={
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.TOP,
                 'expand': True,
                 'fill': ctk.BOTH
@@ -574,8 +576,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT
             }
         )
@@ -593,8 +595,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT,
                 'expand': True,
                 'fill': ctk.X
@@ -614,8 +616,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT,
                 'expand': True,
                 'fill': ctk.X
@@ -635,8 +637,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT,
             }
         )
@@ -654,8 +656,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT,
                 'expand': True,
                 'fill': ctk.X
@@ -675,8 +677,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT,
                 'expand': True,
                 'fill': ctk.X
@@ -696,8 +698,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT,
             }
         )
@@ -715,8 +717,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT,
             }
         )
@@ -735,8 +737,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT,
                 'expand': True,
                 'fill': ctk.X
@@ -757,8 +759,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT,
                 'expand': True,
                 'fill': ctk.X
@@ -778,8 +780,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT
             }
         )
@@ -802,8 +804,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT
             }
         )
@@ -823,8 +825,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.RIGHT
             }
         )
@@ -871,10 +873,9 @@ class App(ctk.CTk):
                     'show': 'headings'
                 },
                 position_params={
-                    'padx': self._current_width / 100,
-                    'pady': self._current_height / 100,
-                    'side': ctk.TOP,
-                    'expand': True,
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.LEFT,
                     'fill': ctk.BOTH
                 }
             )
@@ -882,6 +883,7 @@ class App(ctk.CTk):
             # Add the column names to the heading
             for col in colnames:
                 logTable.widget.heading(col, text=col)
+                logTable.widget.column(col, stretch='NO', width=WINDOW_WIDTH // 5, anchor=TREEVIEW_ANCHOR)
 
             # Add the data to the table
             show_log()
@@ -901,8 +903,8 @@ class App(ctk.CTk):
             position_params={
                 'fill': ctk.BOTH, # Fill all the assigned space in the container
                 'expand': True, # expand when window is resized
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100
             }
         )
 
@@ -919,10 +921,34 @@ class App(ctk.CTk):
                 'fg_color': "transparent"
             },
             position_params={
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': ctk.LEFT,
+                'fill': ctk.BOTH,
+                'expand': True
+            }
+        )
+
+        Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='createButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': show_log,
+                'text': 'Refrescar',
+                'height': WINDOW_HEIGHT / 10,
+                'width': WINDOW_WIDTH / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.TOP,
-                'fill': ctk.BOTH
+                'fill': ctk.X,
+                'expand': True
             }
         )
 
@@ -940,12 +966,14 @@ class App(ctk.CTk):
                 'border_width': 2,
                 'fg_color': 'gray10',
                 'height': WINDOW_HEIGHT / 10,
+                'width': WINDOW_WIDTH / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
-                'side': ctk.LEFT
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': ctk.BOTTOM,
+                'fill': ctk.X
             }
         )
 
@@ -991,18 +1019,18 @@ class App(ctk.CTk):
                     'show': 'headings'
                 },
                 position_params={
-                    'padx': self._current_width / 100,
-                    'pady': self._current_height / 100,
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
                     'side': ctk.TOP,
-                    'expand': True,
-                    'fill': ctk.BOTH
+                    'fill': ctk.BOTH,
+                    'expand': True
                 }
             )
             
             # Add the column names to the heading
             for col in colnames:
                 staffTable.widget.heading(col, text=col)
-                staffTable.widget.column(col, stretch='NO', width=self._current_width // 6)
+                staffTable.widget.column(col, stretch='NO', width=WINDOW_WIDTH // 6, anchor=TREEVIEW_ANCHOR)
 
             # Add the data to the table
             show_staff()
@@ -1022,8 +1050,8 @@ class App(ctk.CTk):
             position_params={
                 'fill': ctk.BOTH, # Fill all the assigned space in the container
                 'expand': True, # expand when window is resized
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100
             }
         )
 
@@ -1040,8 +1068,8 @@ class App(ctk.CTk):
                 'fg_color': "transparent"
             },
             position_params={
-                'padx': self._current_height / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.TOP,
                 'fill': ctk.BOTH
             }
@@ -1064,8 +1092,8 @@ class App(ctk.CTk):
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
-                'padx': self._current_width / 100,
-                'pady': self._current_height / 100,
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT
             }
         )
