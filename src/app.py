@@ -813,7 +813,7 @@ class App(ctk.CTk):
 
         def show_log(event=None) -> None:
 
-            data = Manager.get_log_info(as_list=True)
+            data = Manager.get_dataframe(as_list=True, path=LOG_FILE)
 
             tree = self._children['registryFrame']['logTable'].widget
 
@@ -829,7 +829,7 @@ class App(ctk.CTk):
 
 
         def add_entries(event=None) -> int:
-            colnames = Manager.get_log_columns()
+            colnames = Manager.get_columns(which='logs')
 
             logTable = Widget(
                 Obj=Treeview,
@@ -920,6 +920,127 @@ class App(ctk.CTk):
                 'side': ctk.LEFT
             }
         )
+
+
+    def __initialize_staff_registry(self) -> None:
+
+        def cancel(event=None) -> None:
+            self._children['registryFrame'].hide()
+            self._children['mainFrame'].show()
+
+            self.__unfocus()
+
+
+        def show_staff(event=None) -> None:
+
+            data = Manager.get_dataframe(as_list=True, path=LOG_FILE)
+
+            tree = self._children['registryFrame']['staffTable'].widget
+
+            # Delete possible items
+            tree.delete(*tree.get_children())
+
+            for entry in data:
+                tree.insert(
+                    parent='',
+                    index=0, # New rows are inserted at the beginning
+                    values=entry
+                )
+
+
+        def add_entries(event=None) -> int:
+            colnames = Manager.get_columns(which='logs')
+
+            staffTable = Widget(
+                Obj=Treeview,
+                master=registryFrame.widget,
+                container=registryFrame.children,
+                ID='staffTable',
+                locator=Treeview.pack,
+                forgetter=Treeview.pack_forget,
+                params={
+                    'columns': colnames,
+                    'show': 'headings'
+                },
+                position_params={
+                    'padx': self._current_width / 100,
+                    'pady': self._current_height / 100,
+                    'side': ctk.TOP,
+                    'expand': True,
+                    'fill': ctk.BOTH
+                }
+            )
+            
+            # Add the column names to the heading
+            for col in colnames:
+                staffTable.widget.heading(col, text=col)
+
+            # Add the data to the table
+            show_staff()
+
+        
+        # The frame containing everything
+        registryFrame = Widget(
+            Obj=CTkFrame,
+            master=self,
+            container=self._children,
+            ID='registryFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'fill': ctk.BOTH, # Fill all the assigned space in the container
+                'expand': True, # expand when window is resized
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100
+            }
+        )
+
+        add_entries()
+
+        buttonsFrame = Widget(
+            Obj=CTkFrame,
+            master=registryFrame.widget,
+            container=registryFrame._children,
+            ID='buttonsFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'padx': self._current_height / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.TOP,
+                'fill': ctk.BOTH
+            }
+        )
+
+        Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='cancelButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': cancel,
+                'text': 'Volver',
+                'border_color': '#1f538d',
+                'border_width': 2,
+                'fg_color': 'gray10',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': self._current_width / 100,
+                'pady': self._current_height / 100,
+                'side': ctk.LEFT
+            }
+        )
+
 
 
     def __initialize(self) -> None:

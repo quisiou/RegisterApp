@@ -1,8 +1,12 @@
 from pathlib import Path, PosixPath
 import pandas as pd
+
 from datetime import datetime
+
 from utils.parameters import *
 import extra
+
+from typing import Literal
 
 class Manager():
     '''
@@ -40,30 +44,15 @@ class Manager():
 
 
     @staticmethod
-    def __get_staff_info() -> pd.DataFrame:
+    def get_dataframe(start=0, size=None, as_list=False, path=None) -> pd.DataFrame:
         '''
-        Retrieves (or creates) the dataframe containing the personal information about the staff
+        Retrieves (or creates) the dataframe containing the solicited registry
 
         :returns output (pd.DataFrame): The information
         '''
 
-        if Path(DATA_DIR, STAFF_FILE).exists():
-            return pd.read_parquet(Path(DATA_DIR, STAFF_FILE), 'pyarrow')
-        else:
-            return pd.DataFrame(columns=['Nombre', 'Apellido1', 'Apellido2', 'Código_Postal', 'Dirección',
-                                        'Email', 'Tfno', 'NIF/NIE', 'Contraseña', 'Admin'])
-
-
-    @staticmethod
-    def get_log_info(start=0, size=None, as_list=False) -> pd.DataFrame:
-        '''
-        Retrieves (or creates) the dataframe containing the registry
-
-        :returns output (pd.DataFrame): The information
-        '''
-
-        if Path(DATA_DIR, LOG_FILE).exists():
-            df = pd.read_parquet(Path(DATA_DIR, LOG_FILE), 'pyarrow')
+        if Path(DATA_DIR, path).exists():
+            df = pd.read_parquet(Path(DATA_DIR, path), 'pyarrow')
 
         else:
             df = pd.DataFrame(columns=['NIF/NIE', 'Día', 'Hora', 'Jornada'])
@@ -81,8 +70,13 @@ class Manager():
 
 
     @staticmethod
-    def get_log_columns() -> tuple:
-        df = Manager.get_log_info()
+    def get_columns(which: Literal['staff', 'logs'] = None) -> tuple:
+
+        if which == 'staff':
+            df = Manager.get_dataframe(path=STAFF_FILE)
+        
+        else:
+            df = Manager.get_dataframe(path=LOG_FILE)
 
         return tuple(df.columns)
 
@@ -106,7 +100,7 @@ class Manager():
             raise Manager.InvalidID()
         
         # Validate credentials
-        df = Manager.__get_staff_info()
+        df = Manager.get_dataframe(path=STAFF_FILE)
 
         employee = df[df['NIF/NIE'] == num]
 
@@ -140,7 +134,7 @@ class Manager():
         '''
 
         # Get dataframe
-        df = Manager.__get_staff_info()
+        df = Manager.get_dataframe(path=STAFF_FILE)
 
         # Verify entries
         if not Manager.__valid_id(number):
@@ -173,7 +167,7 @@ class Manager():
         :returns output (bool): `True` if the shift is starting, `False` otherwise
         '''
         
-        logs = Manager.get_log_info()
+        logs = Manager.get_dataframe(path=LOG_FILE)
 
         return len(logs[logs['NIF/NIE'] == number]) % 2 == 0
 
@@ -191,14 +185,14 @@ class Manager():
         if not Manager.__valid_id(number):
             raise Manager.InvalidID()
 
-        df = Manager.__get_staff_info()
+        df = Manager.get_dataframe(path=STAFF_FILE)
 
         employee = df[df['NIF/NIE'] == number]
 
         if employee is None:
             raise Manager.NotFoundID()
 
-        logs = Manager.get_log_info()
+        logs = Manager.get_dataframe(path=LOG_FILE)
         dt = str(datetime.now()).split()
 
         startShift = Manager.begin_shift(number)
