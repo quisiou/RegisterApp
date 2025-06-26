@@ -8,6 +8,7 @@ from src.dataManager import Manager
 from pathlib import Path
 
 from src.widget import *
+from src.window import Window
 
 from utils.parameters import *
 from utils.appearance import *
@@ -846,7 +847,7 @@ class App(ctk.CTk):
 
             data = Manager.get_dataframe(as_list=True, path=LOG_FILE)
 
-            tree = self._children['logRegistryFrame']['leftSideFrame']['logTable'].widget
+            tree = self._children['logRegistryFrame']['logTable'].widget
 
             # Delete possible items
             tree.delete(*tree.get_children())
@@ -864,8 +865,8 @@ class App(ctk.CTk):
 
             logTable = Widget(
                 Obj=Treeview,
-                master=self._children['logRegistryFrame']['leftSideFrame'].widget,
-                container=self._children['logRegistryFrame']['leftSideFrame'].children,
+                master=self._children['logRegistryFrame'].widget,
+                container=self._children['logRegistryFrame'].children,
                 ID='logTable',
                 locator=Treeview.pack,
                 forgetter=Treeview.pack_forget,
@@ -875,8 +876,8 @@ class App(ctk.CTk):
                 },
                 position_params={
                     'padx': WINDOW_WIDTH / 100,
-                    'pady': WINDOW_WIDTH / 100,
-                    'side': ctk.TOP,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.LEFT,
                     'fill': ctk.BOTH,
                     'expand': True
                 }
@@ -891,9 +892,13 @@ class App(ctk.CTk):
             show_log()
 
 
+        def filter_table(event=None) -> None:
+            print('filtrando...')
+
+
         def export_table(event=None) -> None:
 
-            tree: Treeview = self._children['logRegistryFrame']['leftSideFrame']['logTable'].widget
+            tree: Treeview = self._children['logRegistryFrame']['logTable'].widget
             columns = tree['columns']
             rows = []
 
@@ -931,23 +936,7 @@ class App(ctk.CTk):
             }
         )
 
-        leftSideFrame = Widget(
-            Obj=CTkFrame,
-            master=logRegistryFrame.widget,
-            container=logRegistryFrame._children,
-            ID='leftSideFrame',
-            locator=ctk.CTkBaseClass.pack,
-            forgetter=ctk.CTkBaseClass.pack_forget,
-            params={
-                'fg_color': "transparent"
-            },
-            position_params={
-                'padx': WINDOW_WIDTH / 100,
-                'pady': WINDOW_HEIGHT / 100,
-                'side': ctk.LEFT,
-                'fill': ctk.BOTH
-            }
-        )
+        add_entries()
 
         buttonsFrame = Widget(
             Obj=CTkFrame,
@@ -962,28 +951,7 @@ class App(ctk.CTk):
             position_params={
                 'padx': WINDOW_HEIGHT / 100,
                 'pady': WINDOW_HEIGHT / 100,
-                'side': ctk.LEFT,
-                'fill': ctk.BOTH,
-                'expand': True
-            }
-        )
-
-        add_entries()
-
-        lowerButtonsFrame = Widget(
-            Obj=CTkFrame,
-            master=leftSideFrame.widget,
-            container=leftSideFrame._children,
-            ID='lowerButtonsFrame',
-            locator=ctk.CTkBaseClass.pack,
-            forgetter=ctk.CTkBaseClass.pack_forget,
-            params={
-                'fg_color': "transparent"
-            },
-            position_params={
-                # 'padx': WINDOW_HEIGHT / 100,
-                'pady': WINDOW_HEIGHT / 100,
-                'side': ctk.TOP,
+                'side': ctk.RIGHT,
                 'fill': ctk.BOTH
             }
         )
@@ -999,14 +967,35 @@ class App(ctk.CTk):
                 'command': show_log,
                 'text': 'Refrescar',
                 'height': WINDOW_HEIGHT / 10,
-                'width': WINDOW_WIDTH / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': WINDOW_WIDTH / 100,
-                'pady': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.TOP,
                 'fill': ctk.X
+            }
+        )
+
+        Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='filterTableButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': filter_table,
+                'text': 'Filtrar',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': ctk.TOP,
+                'fill': ctk.X,
+                'expand': True
             }
         )
 
@@ -1021,21 +1010,21 @@ class App(ctk.CTk):
                 'command': export_table,
                 'text': 'Exportar',
                 'height': WINDOW_HEIGHT / 10,
-                'width': WINDOW_WIDTH / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': WINDOW_WIDTH / 100,
-                'pady': WINDOW_WIDTH / 100,
-                'side': ctk.BOTTOM,
-                'fill': ctk.X
+                'pady': WINDOW_HEIGHT / 100,
+                'side': ctk.TOP,
+                'fill': ctk.X,
+                'expand': True
             }
         )
 
         Widget(
             Obj=ctk.CTkButton,
-            master=lowerButtonsFrame.widget,
-            container=lowerButtonsFrame.children,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
             ID='cancelButton',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
@@ -1051,7 +1040,8 @@ class App(ctk.CTk):
             position_params={
                 'padx': WINDOW_WIDTH / 100,
                 'pady': WINDOW_HEIGHT / 100,
-                'side': ctk.LEFT
+                'side': ctk.BOTTOM,
+                'fill': ctk.X
             }
         )
 
