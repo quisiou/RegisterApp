@@ -8,7 +8,6 @@ from src.dataManager import Manager
 from pathlib import Path
 
 from src.widget import *
-from src.window import Window
 
 from utils.parameters import *
 from utils.appearance import *
@@ -117,7 +116,7 @@ class App(ctk.CTk):
             
 
         mainFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=self,
             container=self._children,
             ID='mainFrame',
@@ -135,7 +134,7 @@ class App(ctk.CTk):
         )
 
         containerFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=mainFrame.widget,
             container=mainFrame.children,
             ID='containerFrame',
@@ -309,7 +308,7 @@ class App(ctk.CTk):
         
         # The frame containing everything
         logInFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=self,
             container=self._children,
             ID='logInFrame',
@@ -329,7 +328,7 @@ class App(ctk.CTk):
 
         # The frame with the widgets
         containerFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=logInFrame.widget,
             container=logInFrame.children,
             ID='containerFrame',
@@ -451,7 +450,7 @@ class App(ctk.CTk):
         # The frames and their configs
 
         createUserFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=self,
             container=self._children,
             ID='createUserFrame',
@@ -469,7 +468,7 @@ class App(ctk.CTk):
         )
 
         dataInputFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=createUserFrame.widget,
             container=createUserFrame._children,
             ID='dataInputFrame',
@@ -488,7 +487,7 @@ class App(ctk.CTk):
         )
         
         buttonsFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=createUserFrame.widget,
             container=createUserFrame._children,
             ID='buttonsFrame',
@@ -506,7 +505,7 @@ class App(ctk.CTk):
         )
         
         nameInfoFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=dataInputFrame.widget,
             container=dataInputFrame._children,
             ID='nameInfoFrame',
@@ -525,7 +524,7 @@ class App(ctk.CTk):
         )
 
         localInfoFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=dataInputFrame.widget,
             container=dataInputFrame._children,
             ID='localInfoFrame',
@@ -544,7 +543,7 @@ class App(ctk.CTk):
         )
 
         accountInfoFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=dataInputFrame.widget,
             container=dataInputFrame._children,
             ID='accountInfoFrame',
@@ -919,7 +918,7 @@ class App(ctk.CTk):
         
         # The frame containing everything
         logRegistryFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=self,
             container=self._children,
             ID='logRegistryFrame',
@@ -939,7 +938,7 @@ class App(ctk.CTk):
         add_entries()
 
         buttonsFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=logRegistryFrame.widget,
             container=logRegistryFrame._children,
             ID='buttonsFrame',
@@ -1106,7 +1105,7 @@ class App(ctk.CTk):
         
         # The frame containing everything
         staffRegistryFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=self,
             container=self._children,
             ID='staffRegistryFrame',
@@ -1126,7 +1125,7 @@ class App(ctk.CTk):
         add_entries()
 
         buttonsFrame = Widget(
-            Obj=CTkFrame,
+            Obj=ctk.CTkFrame,
             master=staffRegistryFrame.widget,
             container=staffRegistryFrame._children,
             ID='buttonsFrame',

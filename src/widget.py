@@ -1,4 +1,4 @@
-from customtkinter import CTkBaseClass, CTkFrame
+from customtkinter import CTkBaseClass, CTkToplevel
 
 from typing import Any
 
@@ -109,4 +109,15 @@ class Widget:
 
     def deactivate(self) -> None:
         self._active = False
-    
+
+
+
+class Window(CTkToplevel):
+
+    _children: dict = None
+
+    def __init__(self, fg_color = None):
+
+        super().__init__(fg_color=fg_color)
+        
+        self._children = {}
