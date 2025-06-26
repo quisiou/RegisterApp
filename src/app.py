@@ -1,6 +1,7 @@
 import customtkinter as ctk
+
 from tkinter.ttk import Treeview
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 
 from src.dataManager import Manager
 
@@ -901,9 +902,14 @@ class App(ctk.CTk):
                 rows.append(tree.item(item_id)['values'])
 
             # Get export path
-            path = Path(Path.cwd(), 'export_name.csv')
+            path = filedialog.asksaveasfilename(
+                title='Seleccionar ruta de destino',
+                filetypes=(('CSV file', '*.csv'), ('All files', '*.*')),
+                initialdir=Path.home()
+            )
 
-            Manager.export_df(colnames=columns, rows=rows, path=path)
+            if path:
+                Manager.export_df(colnames=columns, rows=rows, path=path)
 
         
         # The frame containing everything
