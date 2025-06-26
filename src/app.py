@@ -845,7 +845,7 @@ class App(ctk.CTk):
 
             data = Manager.get_dataframe(as_list=True, path=LOG_FILE)
 
-            tree = self._children['logRegistryFrame']['logTable'].widget
+            tree = self._children['logRegistryFrame']['leftSideFrame']['logTable'].widget
 
             # Delete possible items
             tree.delete(*tree.get_children())
@@ -863,8 +863,8 @@ class App(ctk.CTk):
 
             logTable = Widget(
                 Obj=Treeview,
-                master=logRegistryFrame.widget,
-                container=logRegistryFrame.children,
+                master=self._children['logRegistryFrame']['leftSideFrame'].widget,
+                container=self._children['logRegistryFrame']['leftSideFrame'].children,
                 ID='logTable',
                 locator=Treeview.pack,
                 forgetter=Treeview.pack_forget,
@@ -874,9 +874,10 @@ class App(ctk.CTk):
                 },
                 position_params={
                     'padx': WINDOW_WIDTH / 100,
-                    'pady': WINDOW_HEIGHT / 100,
-                    'side': ctk.LEFT,
-                    'fill': ctk.BOTH
+                    'pady': WINDOW_WIDTH / 100,
+                    'side': ctk.TOP,
+                    'fill': ctk.BOTH,
+                    'expand': True
                 }
             )
             
@@ -887,6 +888,22 @@ class App(ctk.CTk):
 
             # Add the data to the table
             show_log()
+
+
+        def export_table(event=None) -> None:
+
+            tree: Treeview = self._children['logRegistryFrame']['leftSideFrame']['logTable'].widget
+            columns = tree['columns']
+            rows = []
+
+            # Add rows
+            for item_id in tree.get_children():
+                rows.append(tree.item(item_id)['values'])
+
+            # Get export path
+            path = Path(Path.cwd(), 'export_name.csv')
+
+            Manager.export_df(colnames=columns, rows=rows, path=path)
 
         
         # The frame containing everything
@@ -908,7 +925,23 @@ class App(ctk.CTk):
             }
         )
 
-        add_entries()
+        leftSideFrame = Widget(
+            Obj=CTkFrame,
+            master=logRegistryFrame.widget,
+            container=logRegistryFrame._children,
+            ID='leftSideFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': ctk.LEFT,
+                'fill': ctk.BOTH
+            }
+        )
 
         buttonsFrame = Widget(
             Obj=CTkFrame,
@@ -929,6 +962,26 @@ class App(ctk.CTk):
             }
         )
 
+        add_entries()
+
+        lowerButtonsFrame = Widget(
+            Obj=CTkFrame,
+            master=leftSideFrame.widget,
+            container=leftSideFrame._children,
+            ID='lowerButtonsFrame',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'fg_color': "transparent"
+            },
+            position_params={
+                # 'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': ctk.TOP,
+                'fill': ctk.BOTH
+            }
+        )
+
         Widget(
             Obj=ctk.CTkButton,
             master=buttonsFrame.widget,
@@ -945,10 +998,9 @@ class App(ctk.CTk):
             },
             position_params={
                 'padx': WINDOW_WIDTH / 100,
-                'pady': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_WIDTH / 100,
                 'side': ctk.TOP,
-                'fill': ctk.X,
-                'expand': True
+                'fill': ctk.X
             }
         )
 
@@ -956,6 +1008,28 @@ class App(ctk.CTk):
             Obj=ctk.CTkButton,
             master=buttonsFrame.widget,
             container=buttonsFrame.children,
+            ID='exportButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': export_table,
+                'text': 'Exportar',
+                'height': WINDOW_HEIGHT / 10,
+                'width': WINDOW_WIDTH / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_WIDTH / 100,
+                'side': ctk.BOTTOM,
+                'fill': ctk.X
+            }
+        )
+
+        Widget(
+            Obj=ctk.CTkButton,
+            master=lowerButtonsFrame.widget,
+            container=lowerButtonsFrame.children,
             ID='cancelButton',
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
@@ -966,14 +1040,12 @@ class App(ctk.CTk):
                 'border_width': 2,
                 'fg_color': 'gray10',
                 'height': WINDOW_HEIGHT / 10,
-                'width': WINDOW_WIDTH / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
             position_params={
                 'padx': WINDOW_WIDTH / 100,
                 'pady': WINDOW_HEIGHT / 100,
-                'side': ctk.BOTTOM,
-                'fill': ctk.X
+                'side': ctk.LEFT
             }
         )
 

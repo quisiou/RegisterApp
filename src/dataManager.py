@@ -90,6 +90,17 @@ class Manager():
 
 
     @staticmethod
+    def export_df(colnames=None, rows=None, path: Path | PosixPath = None) -> None:
+        
+        df = pd.DataFrame(columns=colnames)
+
+        for row in rows:
+            df.loc[len(df)] = row
+
+        df.to_csv(path, index=False)
+        
+
+    @staticmethod
     def __valid_id(num: str) -> bool:
         is_nif = (len(num) == 9) and (num[:8].isnumeric()) and (num[8].isalpha())
         is_nie = (len(num) == 9) and (num[1:8].isnumeric()) and (num[8].isalpha()) and (num[0] in ['X', 'Y', 'Z'])
