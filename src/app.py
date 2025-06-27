@@ -7,7 +7,7 @@ from tkcalendar import DateEntry
 from src.dataManager import Manager
 
 from pathlib import Path
-from datetime import date
+from datetime import datetime
 
 from src.widget import *
 
@@ -89,6 +89,8 @@ class App(ctk.CTk):
 
             else:
                 self._children['mainFrame']['containerFrame']['addLogButton'].deactivate()
+
+            self._children['logRegistryFrame']['logTable'].filters = None
 
             self._cookies = None
 
@@ -899,6 +901,16 @@ class App(ctk.CTk):
                 window.destroy()
 
 
+            def set_current_filters():
+                filters = self._children['logRegistryFrame']['logTable'].filters
+
+                if filters is not None:
+                    numberDropdown.widget.set(filters['NIF/NIE'])
+                    startDateEntry.widget.set_date(datetime.strptime(filters['Día'][0], '%Y-%m-%d').date())
+                    finalDateEntry.widget.set_date(datetime.strptime(filters['Día'][1], '%Y-%m-%d').date())
+                    shiftDropdown.widget.set(filters['Jornada'])
+
+
             modal = Window()
             modal.geometry(self.__centerWindowOnScreen(
                 self.winfo_screenwidth(),
@@ -959,9 +971,7 @@ class App(ctk.CTk):
                 locator=ctk.CTkBaseClass.pack,
                 forgetter=ctk.CTkBaseClass.pack_forget,
                 params={
-                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='NIF/NIE'),
-                    'height': WINDOW_HEIGHT / 10,
-                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='NIF/NIE')
                 },
                 position_params={
                     'padx': WINDOW_WIDTH / 100,
@@ -1021,9 +1031,7 @@ class App(ctk.CTk):
                 locator=ctk.CTkBaseClass.pack,
                 forgetter=ctk.CTkBaseClass.pack_forget,
                 params={
-                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='Jornada'),
-                    'height': WINDOW_HEIGHT / 10,
-                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='Jornada')
                 },
                 position_params={
                     'padx': WINDOW_WIDTH / 100,
@@ -1096,6 +1104,8 @@ class App(ctk.CTk):
                 },
                 show=True
             )
+
+            set_current_filters()
 
             self.wait_window(modal)
 

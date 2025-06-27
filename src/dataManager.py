@@ -62,8 +62,8 @@ class Manager():
             df = pd.DataFrame(columns=['NIF/NIE', 'Día', 'Hora', 'Jornada'])
         
         elif path == STAFF_FILE:
-            df = pd.DataFrame(columns=['Nombre', 'Apellido1', 'Apellido2', 'Código_Postal',
-                                    'Dirección', 'Email', 'Tfno', 'NIF/NIE', 'Contraseña', 'Admin'])
+            df = pd.DataFrame(columns=['NIF/NIE', 'Nombre', 'Apellido1', 'Apellido2', 'Código_Postal',
+                                        'Dirección', 'Email', 'Tfno', 'Contraseña', 'Admin'])
 
         if size is None:
             size = len(df)
@@ -195,8 +195,8 @@ class Manager():
         if phone in list(df['Tfno']):
             raise Manager.AlreadyExistingPhone()
         
-        df.loc[len(df)] = [name, last1, last2, post_code, address, email,
-                        phone, number, passwd, bool(isAdmin)]
+        df.loc[len(df)] = [number, name, last1, last2, post_code, address,
+                        email, phone, passwd, bool(isAdmin)]
 
         # Save data
         df.to_parquet(Path(DATA_DIR, STAFF_FILE), engine='pyarrow')
