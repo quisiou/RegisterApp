@@ -33,9 +33,13 @@ class App(ctk.CTk):
         super().__init__()
 
         # window-related
-        self.geometry(self.__centerWindowOnScreen(width, height))
-        # self.resizable(width=False, height=False)
-        self.resizable(width=True, height=True)
+        self.geometry(self.__centerWindowOnScreen(
+            self.winfo_screenwidth(),
+            self.winfo_screenheight(),
+            width,
+            height
+        ))
+        self.resizable(width=False, height=False)
         self.title('Clocker')
 
         # Attributes
@@ -49,14 +53,13 @@ class App(ctk.CTk):
         self.__initialize()
 
 
-    def __centerWindowOnScreen(self, width: int, height: int, scale_factor: float = 1.0):
+    def __centerWindowOnScreen(self, screen_width, screen_height, width: int, height: int):
         '''
         Centers the window to the main display/monitor
         '''
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-        x = int(((screen_width/2) - (width/2)) * scale_factor)
-        y = int(((screen_height/2) - (height/1.5)) * scale_factor)
+
+        x = int((screen_width - width) / 2)
+        y = int((screen_height / 2) - (height / 1.5))
         return f"{width}x{height}+{x}+{y}"
 
 
@@ -854,7 +857,7 @@ class App(ctk.CTk):
             for entry in data:
                 tree.insert(
                     parent='',
-                    index=0, # New rows are inserted at the beginning
+                    index=0, # New rows are inserted at the beginning (top) of the table
                     values=entry
                 )
 
@@ -892,7 +895,101 @@ class App(ctk.CTk):
 
 
         def filter_table(event=None) -> None:
-            print('filtrando...')
+
+            modal = Window()
+            modal.geometry(self.__centerWindowOnScreen(
+                self.winfo_screenwidth(),
+                self.winfo_screenheight(),
+                4 * WINDOW_WIDTH // 5,
+                4 * WINDOW_HEIGHT // 5
+            ))
+            modal.title('Búsqueda filtrada')
+            modal.resizable(width=False, height=False)
+
+            mainModalFrame = Widget(
+                Obj=ctk.CTkFrame,
+                master=modal,
+                container=modal.content,
+                ID='filtersFrame',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'fg_color': "transparent"
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.TOP,
+                    'fill': ctk.BOTH,
+                    'expand': True
+                },
+                show=True
+            )
+
+            filtersFrame = Widget(
+                Obj=ctk.CTkFrame,
+                master=mainModalFrame.widget,
+                container=mainModalFrame.children,
+                ID='filtersFrame',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'fg_color': "transparent"
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.TOP,
+                    'fill': ctk.BOTH,
+                    'expand': True
+                },
+                show=True
+            )
+
+            modalButtonsFrame = Widget(
+                Obj=ctk.CTkFrame,
+                master=mainModalFrame.widget,
+                container=mainModalFrame.children,
+                ID='modalButtonsFrame',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'fg_color': "transparent"
+                },
+                position_params={
+                    'padx': WINDOW_HEIGHT / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.TOP,
+                    'fill': ctk.BOTH
+                },
+                show=True
+            )
+
+            Widget(
+                Obj=ctk.CTkButton,
+                master=modalButtonsFrame.widget,
+                container=modalButtonsFrame.children,
+                ID='cancelButton',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'command': modal.destroy,
+                    'text': 'Volver',
+                    'border_color': '#1f538d',
+                    'border_width': 2,
+                    'fg_color': 'gray10',
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.LEFT
+                },
+                show=True
+            )
+            
+            self.wait_window(modal)
 
 
         def export_table(event=None) -> None:

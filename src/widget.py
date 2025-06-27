@@ -2,7 +2,7 @@ from customtkinter import CTkBaseClass, CTkToplevel
 
 from typing import Any
 
-from src.dataManager import Manager
+from utils.parameters import *
 
 class Widget:
     '''
@@ -114,10 +114,15 @@ class Widget:
 
 class Window(CTkToplevel):
 
-    _children: dict = None
+    _content: dict = None
 
     def __init__(self, fg_color = None):
 
         super().__init__(fg_color=fg_color)
-        
-        self._children = {}
+
+        self._content = {}
+
+
+    @property
+    def content(self) -> dict:
+        return self._content
