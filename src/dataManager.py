@@ -68,7 +68,7 @@ class Manager():
         if size is None:
             size = len(df)
 
-        res_df = df[min(start, 0) : min(start + size, len(df))]
+        res_df = df[ : min(size, len(df))]
 
         if as_list:
             return res_df.values.tolist()
@@ -90,6 +90,11 @@ class Manager():
 
 
     @staticmethod
+    def get_uniques(df: pd.DataFrame, col: str):
+        return list(df[col].unique())
+
+
+    @staticmethod
     def export_df(colnames=None, rows=None, path: Path | PosixPath = None) -> None:
         
         df = pd.DataFrame(columns=colnames)
@@ -101,8 +106,23 @@ class Manager():
         
 
     @staticmethod
-    def filter_df(df: pd.DataFrame, params: dict) -> pd.DataFrame:
-        return df
+    def filter_df(path: Path | PosixPath, params: dict, as_list: bool = False) -> pd.DataFrame:
+        
+        df = Manager.get_dataframe(path=path)
+
+        for p, value in params.items():
+            
+            if type(value) != list:
+                df = df[df[p] == value]
+
+            else:
+                df = df[(df[p] >= value[0]) & (df[p] <= value[0])]
+
+        if as_list:
+            return df.values.tolist()
+
+        else:
+            return df
 
 
     @staticmethod

@@ -3,7 +3,7 @@ from tkinter.ttk import Treeview
 
 from pathlib import Path, PosixPath
 
-from typing import Any
+from typing import Any, Literal
 
 from src.dataManager import Manager
 from utils.parameters import *
@@ -76,6 +76,7 @@ class Widget:
     def get(self) -> str | None:
         try:
             return self._widget.get()
+        
         except Exception as e:
             return None
            
@@ -137,8 +138,6 @@ class Table(Widget):
             show=show
         )
 
-        self._filters = {}
-
     
     def clear(self):
         self._widget.delete(*self._widget.get_children())
@@ -159,13 +158,32 @@ class Table(Widget):
         # Delete possible items
         self.clear()
 
+        if self._filters is not None:
+            data = Manager.filter_df(path=path, params=self._filters, as_list=True)
+
         # Insert rows
         for entry in data: self.insert_row(entry)
+
+
+    def reload(self, path: Path | PosixPath) -> None:
+        '''
+        Clear filters and load table again
+
+        :params (Path | PosixPath) path: File path where data is stored
+        '''
+
+        self._filters = None
+        self.load(path=path)
 
 
     @property
     def filters(self) -> dict:
         return self._filters
+
+
+    @filters.setter
+    def filters(self, value) -> None:
+        self._filters = value
     
 
 
@@ -181,6 +199,92 @@ class Window(CTkToplevel):
         self._content = {}
 
 
+    def __getitem__(self, key) -> Any:
+        return self._content[key]
+
+
     @property
     def content(self) -> dict:
         return self._content
+
+
+
+
+# Maybe if using ttkbootstrap in the future
+# class Dropdown:
+
+#     from ttkbootstrap import Menu, Menubutton
+
+#     _button: Menubutton = None
+#     _menu: Menu = None
+#     _params: dict = None
+#     _locator: Any = None
+#     _forget: Any = None
+#     _active: bool = None
+
+#     def __init__(self, master: Any, container: dict, ID: str, locator: Literal['pack', 'grid', 'place'],
+#                 options: list = [], button_params: dict = {}, menu_params: dict = {},
+#                 position_params: dict = {}, active: bool = True, show: bool = False):
+
+#         assert ID not in container, 'ID already in use'
+
+#         self._button = Dropdown.Menubutton(master, **button_params)
+#         self._menu = Dropdown.Menu(master, **menu_params)
+#         self._params = position_params
+#         self._active = active
+
+#         if locator == 'pack':
+#             self._locator = Dropdown.Menubutton.pack
+#             self._forget = Dropdown.Menubutton.pack_forget
+
+#         elif locator == 'grid':
+#             self._locator = Dropdown.Menubutton.grid
+#             self._forget = Dropdown.Menubutton.grid_forget
+
+#         elif locator == 'place':
+#             self._locator = Dropdown.Menubutton.place
+#             self._forget = Dropdown.Menubutton.place_forget
+
+#         # Add options to the dropdown
+#         for opt in options:
+#             self._menu.add_radiobutton(
+#                 label=opt
+#             )
+
+#         # Link the menu with the button
+#         self._button['menu'] = self._menu
+
+#         # add to the container
+#         container[ID] = self
+
+#         # show directly if wanted
+#         if show: self.show()
+
+
+#     def show(self) -> None:
+
+#         if self._active:
+#             self._locator(self._button, **self._params)
+
+
+#     def hide(self) -> None:
+
+#         if self._active:
+#             self._forget(self._button)
+
+
+#     @property
+#     def loc_params(self) -> dict:
+#         return self._params
+    
+
+#     def active(self) -> bool:
+#         return self._active
+    
+    
+#     def activate(self) -> None:
+#         self._active = True
+
+
+#     def deactivate(self) -> None:
+#         self._active = False

@@ -2,6 +2,7 @@ import customtkinter as ctk
 
 from tkinter.ttk import Treeview
 from tkinter import messagebox, filedialog
+from tkcalendar import DateEntry
 
 from src.dataManager import Manager
 
@@ -878,12 +879,20 @@ class App(ctk.CTk):
             return logTable
 
 
-        def filter_table(event=None) -> None:
+        def filter_table(event=None, table: Table = None) -> None:
 
-            def save_filters(event=None, tree: Table = None) -> None:
+            def save_filters(event=None, window: Window = None, table: Table = None, params: dict = None) -> None:
                 
-                print('Filtros aplicados:')
-                print(tree.filters)
+                table.filters = {
+                    'Día': [
+                        startDateEntry.widget.get_date(),
+                        finalDateEntry.widget.get_date()
+                    ]
+                }
+
+                table.load(path=LOG_FILE)
+
+                window.destroy()
 
 
             modal = Window()
@@ -895,6 +904,8 @@ class App(ctk.CTk):
             ))
             modal.title('Búsqueda filtrada')
             modal.resizable(width=False, height=False)
+
+            data = Manager.get_dataframe(path=LOG_FILE)
 
             mainModalFrame = Widget(
                 Obj=ctk.CTkFrame,
@@ -932,6 +943,48 @@ class App(ctk.CTk):
                     'side': ctk.TOP,
                     'fill': ctk.BOTH,
                     'expand': True
+                },
+                show=True
+            )
+
+            startDateEntry = Widget(
+                Obj=DateEntry,
+                master=filtersFrame.widget,
+                container=filtersFrame.children,
+                ID='startDateEntry',
+                locator=DateEntry.pack,
+                forgetter=DateEntry.pack_forget,
+                params={
+                    'locale': 'es_ES',
+                    'selectmode': 'day',
+                    'showweeknumbers': False,
+                    'showothermonthdays': False
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.LEFT
+                },
+                show=True
+            )
+
+            finalDateEntry = Widget(
+                Obj=DateEntry,
+                master=filtersFrame.widget,
+                container=filtersFrame.children,
+                ID='finalDateEntry',
+                locator=DateEntry.pack,
+                forgetter=DateEntry.pack_forget,
+                params={
+                    'locale': 'es_ES',
+                    'selectmode': 'day',
+                    'showweeknumbers': False,
+                    'showothermonthdays': False
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.LEFT
                 },
                 show=True
             )
@@ -987,8 +1040,8 @@ class App(ctk.CTk):
                 locator=ctk.CTkBaseClass.pack,
                 forgetter=ctk.CTkBaseClass.pack_forget,
                 params={
-                    'command': lambda: save_filters(tree=self._children['logRegistryFrame']['logTable']),
-                    'text': 'Exportar',
+                    'command': lambda: save_filters(window=modal, table=table),
+                    'text': 'Aplicar',
                     'height': WINDOW_HEIGHT / 10,
                     'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
@@ -1071,7 +1124,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': lambda: logTable.load(path=LOG_FILE),
+                'command': lambda: logTable.reload(path=LOG_FILE),
                 'text': 'Refrescar',
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
@@ -1092,7 +1145,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': filter_table,
+                'command': lambda: filter_table(table=logTable),
                 'text': 'Filtrar',
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
