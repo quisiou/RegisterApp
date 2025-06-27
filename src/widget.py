@@ -152,19 +152,21 @@ class Table(Widget):
         )
 
 
-    def load(self, path: Path | PosixPath, filters: dict = None) -> None:
+    def load(self, path: Path | PosixPath) -> None:
 
         data = Manager.get_dataframe(as_list=True, path=path)
 
         # Delete possible items
         self.clear()
 
-        # Filter data if necessary
-        if filters is not None:
-            data = Manager.filter_df(data, filters)
-
         # Insert rows
         for entry in data: self.insert_row(entry)
+
+
+    @property
+    def filters(self) -> dict:
+        return self._filters
+    
 
 
 

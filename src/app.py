@@ -882,8 +882,9 @@ class App(ctk.CTk):
 
             def save_filters(event=None, tree: Table = None) -> None:
                 
-                print(tree)
-                print('Filtros aplicados')
+                print('Filtros aplicados:')
+                print(tree.filters)
+
 
             modal = Window()
             modal.geometry(self.__centerWindowOnScreen(
