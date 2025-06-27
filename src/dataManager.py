@@ -113,7 +113,8 @@ class Manager():
         for p, value in params.items():
             
             if type(value) != list:
-                df = df[df[p] == value]
+                if value != EMPTY_OPTION:
+                    df = df[df[p] == value]
 
             else:
                 df = df[(df[p] >= value[0]) & (df[p] <= value[0])]

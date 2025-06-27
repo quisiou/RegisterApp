@@ -7,6 +7,7 @@ from tkcalendar import DateEntry
 from src.dataManager import Manager
 
 from pathlib import Path
+from datetime import date
 
 from src.widget import *
 
@@ -100,6 +101,7 @@ class App(ctk.CTk):
         def check_log(event=None) -> None:
             self._children['mainFrame'].hide()
             self._children['logRegistryFrame'].show()
+            self._children['logRegistryFrame']['logTable'].load(path=LOG_FILE)
 
         
         def check_staff(event=None) -> None:
@@ -884,10 +886,12 @@ class App(ctk.CTk):
             def save_filters(event=None, window: Window = None, table: Table = None, params: dict = None) -> None:
                 
                 table.filters = {
+                    'NIF/NIE': numberDropdown.get(),
                     'Día': [
-                        startDateEntry.widget.get_date(),
-                        finalDateEntry.widget.get_date()
-                    ]
+                        str(startDateEntry.widget.get_date()),
+                        str(finalDateEntry.widget.get_date())
+                    ],
+                    'Jornada': shiftDropdown.get()
                 }
 
                 table.load(path=LOG_FILE)
@@ -947,6 +951,26 @@ class App(ctk.CTk):
                 show=True
             )
 
+            numberDropdown = Widget(
+                Obj=ctk.CTkOptionMenu,
+                master=filtersFrame.widget,
+                container=filtersFrame.children,
+                ID='numberDropdown',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='NIF/NIE'),
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.LEFT
+                },
+                show=True
+            )
+
             startDateEntry = Widget(
                 Obj=DateEntry,
                 master=filtersFrame.widget,
@@ -980,6 +1004,26 @@ class App(ctk.CTk):
                     'selectmode': 'day',
                     'showweeknumbers': False,
                     'showothermonthdays': False
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.LEFT
+                },
+                show=True
+            )
+
+            shiftDropdown = Widget(
+                Obj=ctk.CTkOptionMenu,
+                master=filtersFrame.widget,
+                container=filtersFrame.children,
+                ID='shiftDropdown',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='Jornada'),
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
                     'padx': WINDOW_WIDTH / 100,
