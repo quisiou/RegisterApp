@@ -845,28 +845,10 @@ class App(ctk.CTk):
             self.__unfocus()
 
 
-        def show_log(event=None) -> None:
-
-            data = Manager.get_dataframe(as_list=True, path=LOG_FILE)
-
-            tree = self._children['logRegistryFrame']['logTable'].widget
-
-            # Delete possible items
-            tree.delete(*tree.get_children())
-
-            for entry in data:
-                tree.insert(
-                    parent='',
-                    index=0, # New rows are inserted at the beginning (top) of the table
-                    values=entry
-                )
-
-
-        def add_entries(event=None) -> int:
+        def add_entries(event=None) -> Table:
             colnames = Manager.get_columns(which='logs')
 
-            logTable = Widget(
-                Obj=Treeview,
+            logTable = Table(
                 master=self._children['logRegistryFrame'].widget,
                 container=self._children['logRegistryFrame'].children,
                 ID='logTable',
@@ -891,10 +873,17 @@ class App(ctk.CTk):
                 logTable.widget.column(col, stretch='NO', width=WINDOW_WIDTH // 5, anchor=TREEVIEW_ANCHOR)
 
             # Add the data to the table
-            show_log()
+            logTable.load(path=LOG_FILE)
+
+            return logTable
 
 
         def filter_table(event=None) -> None:
+
+            def save_filters(event=None, tree: Table = None) -> None:
+                
+                print(tree)
+                print('Filtros aplicados')
 
             modal = Window()
             modal.geometry(self.__centerWindowOnScreen(
@@ -989,6 +978,27 @@ class App(ctk.CTk):
                 show=True
             )
             
+            Widget(
+                Obj=ctk.CTkButton,
+                master=modalButtonsFrame.widget,
+                container=modalButtonsFrame.children,
+                ID='applyFiltersButton',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'command': lambda: save_filters(tree=self._children['logRegistryFrame']['logTable']),
+                    'text': 'Exportar',
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.RIGHT
+                },
+                show=True
+            )
+
             self.wait_window(modal)
 
 
@@ -1032,7 +1042,7 @@ class App(ctk.CTk):
             }
         )
 
-        add_entries()
+        logTable = add_entries()
 
         buttonsFrame = Widget(
             Obj=ctk.CTkFrame,
@@ -1060,7 +1070,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': show_log,
+                'command': lambda: logTable.load(path=LOG_FILE),
                 'text': 'Refrescar',
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')

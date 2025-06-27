@@ -101,6 +101,11 @@ class Manager():
         
 
     @staticmethod
+    def filter_df(df: pd.DataFrame, params: dict) -> pd.DataFrame:
+        return df
+
+
+    @staticmethod
     def __valid_id(num: str) -> bool:
         is_nif = (len(num) == 9) and (num[:8].isnumeric()) and (num[8].isalpha())
         is_nie = (len(num) == 9) and (num[1:8].isnumeric()) and (num[8].isalpha()) and (num[0] in ['X', 'Y', 'Z'])

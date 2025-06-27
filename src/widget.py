@@ -1,7 +1,11 @@
 from customtkinter import CTkBaseClass, CTkToplevel
+from tkinter.ttk import Treeview
+
+from pathlib import Path, PosixPath
 
 from typing import Any
 
+from src.dataManager import Manager
 from utils.parameters import *
 
 class Widget:
@@ -109,6 +113,58 @@ class Widget:
 
     def deactivate(self) -> None:
         self._active = False
+
+
+
+
+class Table(Widget):
+
+    _filters: dict = None
+
+    def __init__(self, master: Any, container: dict, ID: str, locator: Any, forgetter: Any,
+                params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False):
+        
+        super().__init__(
+            Obj=Treeview,
+            master=master,
+            container=container,
+            ID=ID,
+            locator=locator,
+            forgetter=forgetter,
+            params=params,
+            position_params=position_params,
+            active=active,
+            show=show
+        )
+
+        self._filters = {}
+
+    
+    def clear(self):
+        self._widget.delete(*self._widget.get_children())
+
+
+    def insert_row(self, row_data: list | tuple, parent: str = '', index: int = 0) -> None:
+        self._widget.insert(
+            parent='',
+            index=0, # New rows are inserted at the beginning (top) of the table
+            values=row_data
+        )
+
+
+    def load(self, path: Path | PosixPath, filters: dict = None) -> None:
+
+        data = Manager.get_dataframe(as_list=True, path=path)
+
+        # Delete possible items
+        self.clear()
+
+        # Filter data if necessary
+        if filters is not None:
+            data = Manager.filter_df(data, filters)
+
+        # Insert rows
+        for entry in data: self.insert_row(entry)
 
 
 
