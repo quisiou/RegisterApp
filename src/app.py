@@ -1152,6 +1152,26 @@ class App(ctk.CTk):
 
         logTable = add_entries()
 
+        vScrollBar = Widget(
+            Obj=ctk.CTkScrollbar,
+            master=logRegistryFrame.widget,
+            container=logRegistryFrame.children,
+            ID='vScrollBar',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'orientation': 'vertical',
+                'command': logTable.widget.yview
+            },
+            position_params={
+                'padx': (0, WINDOW_WIDTH / 100),
+                'pady': WINDOW_HEIGHT / 100,
+                'side': ctk.LEFT,
+                'fill': ctk.Y
+            }
+        )
+        logTable.widget.configure(yscrollcommand=vScrollBar.widget.set)
+
         buttonsFrame = Widget(
             Obj=ctk.CTkFrame,
             master=logRegistryFrame.widget,
@@ -1286,11 +1306,10 @@ class App(ctk.CTk):
                 )
 
 
-        def add_entries(event=None) -> int:
+        def add_entries(event=None) -> Table:
             colnames = Manager.get_columns(which='staff')
 
-            staffTable = Widget(
-                Obj=Treeview,
+            staffTable = Table(
                 master=staffRegistryFrame.widget,
                 container=staffRegistryFrame.children,
                 ID='staffTable',
@@ -1317,6 +1336,8 @@ class App(ctk.CTk):
             # Add the data to the table
             show_staff()
 
+            return staffTable
+
         
         # The frame containing everything
         staffRegistryFrame = Widget(
@@ -1337,7 +1358,27 @@ class App(ctk.CTk):
             }
         )
 
-        add_entries()
+        staffTable = add_entries()
+
+        hScrollBar = Widget(
+            Obj=ctk.CTkScrollbar,
+            master=staffRegistryFrame.widget,
+            container=staffRegistryFrame.children,
+            ID='hScrollBar',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'orientation': 'horizontal',
+                'command': staffTable.widget.xview
+            },
+            position_params={
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': ctk.TOP,
+                'fill': ctk.X
+            }
+        )
+        staffTable.widget.configure(xscrollcommand=hScrollBar.widget.set)
 
         buttonsFrame = Widget(
             Obj=ctk.CTkFrame,
