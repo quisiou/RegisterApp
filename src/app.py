@@ -963,11 +963,11 @@ class App(ctk.CTk):
                 show=True
             )
 
-            numberFrame = Widget(
+            dropdownFrame = Widget(
                 Obj=ctk.CTkFrame,
                 master=filtersFrame.widget,
                 container=filtersFrame.children,
-                ID='numberFrame',
+                ID='dropdownFrame',
                 locator=ctk.CTkBaseClass.pack,
                 forgetter=ctk.CTkBaseClass.pack_forget,
                 params={
@@ -984,8 +984,8 @@ class App(ctk.CTk):
 
             Widget(
                 Obj=ctk.CTkLabel,
-                master=numberFrame.widget,
-                container=numberFrame.children,
+                master=dropdownFrame.widget,
+                container=dropdownFrame.children,
                 ID='numberLabel',
                 locator=ctk.CTkBaseClass.pack,
                 forgetter=ctk.CTkBaseClass.pack_forget,
@@ -995,7 +995,7 @@ class App(ctk.CTk):
                     'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
-                    'padx': WINDOW_WIDTH / 100,
+                    'padx': (WINDOW_WIDTH / 100, WINDOW_WIDTH / 200),
                     'pady': WINDOW_HEIGHT / 100,
                     'side': ctk.LEFT
                 },
@@ -1004,8 +1004,8 @@ class App(ctk.CTk):
 
             numberDropdown = Widget(
                 Obj=ctk.CTkOptionMenu,
-                master=numberFrame.widget,
-                container=numberFrame.children,
+                master=dropdownFrame.widget,
+                container=dropdownFrame.children,
                 ID='numberDropdown',
                 locator=ctk.CTkBaseClass.pack,
                 forgetter=ctk.CTkBaseClass.pack_forget,
@@ -1015,9 +1015,49 @@ class App(ctk.CTk):
                     'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
-                    'padx': WINDOW_WIDTH / 100,
+                    'padx': (WINDOW_WIDTH / 200, WINDOW_WIDTH / 50),
                     'pady': WINDOW_HEIGHT / 100,
                     'side': ctk.LEFT
+                },
+                show=True
+            )
+
+            shiftDropdown = Widget(
+                Obj=ctk.CTkOptionMenu,
+                master=dropdownFrame.widget,
+                container=dropdownFrame.children,
+                ID='shiftDropdown',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='Jornada'),
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                },
+                position_params={
+                    'padx': (WINDOW_WIDTH / 200, WINDOW_WIDTH / 100),
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.RIGHT
+                },
+                show=True
+            )
+
+            Widget(
+                Obj=ctk.CTkLabel,
+                master=dropdownFrame.widget,
+                container=dropdownFrame.children,
+                ID='shiftLabel',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'text': 'Jornada:',
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                },
+                position_params={
+                    'padx': (WINDOW_WIDTH / 50, WINDOW_WIDTH / 200),
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.RIGHT
                 },
                 show=True
             )
@@ -1054,7 +1094,7 @@ class App(ctk.CTk):
                     'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
-                    'padx': WINDOW_WIDTH / 100,
+                    'padx': (WINDOW_WIDTH / 100, WINDOW_WIDTH / 200),
                     'pady': WINDOW_HEIGHT / 100,
                     'side': ctk.LEFT
                 },
@@ -1077,7 +1117,7 @@ class App(ctk.CTk):
                     'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
-                    'padx': WINDOW_WIDTH / 100,
+                    'padx': (WINDOW_WIDTH / 200, WINDOW_WIDTH / 50),
                     'pady': WINDOW_HEIGHT / 100,
                     'side': ctk.LEFT
                 },
@@ -1100,7 +1140,7 @@ class App(ctk.CTk):
                     'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
-                    'padx': WINDOW_WIDTH / 100,
+                    'padx': (WINDOW_WIDTH / 200, WINDOW_WIDTH / 100),
                     'pady': WINDOW_HEIGHT / 100,
                     'side': ctk.RIGHT
                 },
@@ -1120,68 +1160,9 @@ class App(ctk.CTk):
                     'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
-                    'padx': WINDOW_WIDTH / 100,
+                    'padx': (WINDOW_WIDTH / 50, WINDOW_WIDTH / 200),
                     'pady': WINDOW_HEIGHT / 100,
                     'side': ctk.RIGHT
-                },
-                show=True
-            )
-
-            shiftFrame = Widget(
-                Obj=ctk.CTkFrame,
-                master=filtersFrame.widget,
-                container=filtersFrame.children,
-                ID='shiftFrame',
-                locator=ctk.CTkBaseClass.pack,
-                forgetter=ctk.CTkBaseClass.pack_forget,
-                params={
-                    'fg_color': "transparent"
-                },
-                position_params={
-                    'padx': WINDOW_WIDTH / 100,
-                    'pady': WINDOW_HEIGHT / 100,
-                    'side': ctk.TOP,
-                    'expand': True
-                },
-                show=True
-            )
-
-            Widget(
-                Obj=ctk.CTkLabel,
-                master=shiftFrame.widget,
-                container=shiftFrame.children,
-                ID='shiftLabel',
-                locator=ctk.CTkBaseClass.pack,
-                forgetter=ctk.CTkBaseClass.pack_forget,
-                params={
-                    'text': 'Jornada:',
-                    'height': WINDOW_HEIGHT / 10,
-                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
-                },
-                position_params={
-                    'padx': WINDOW_WIDTH / 100,
-                    'pady': WINDOW_HEIGHT / 100,
-                    'side': ctk.LEFT
-                },
-                show=True
-            )
-
-            shiftDropdown = Widget(
-                Obj=ctk.CTkOptionMenu,
-                master=shiftFrame.widget,
-                container=shiftFrame.children,
-                ID='shiftDropdown',
-                locator=ctk.CTkBaseClass.pack,
-                forgetter=ctk.CTkBaseClass.pack_forget,
-                params={
-                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='Jornada'),
-                    'height': WINDOW_HEIGHT / 10,
-                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
-                },
-                position_params={
-                    'padx': WINDOW_WIDTH / 100,
-                    'pady': WINDOW_HEIGHT / 100,
-                    'side': ctk.LEFT
                 },
                 show=True
             )
