@@ -963,15 +963,95 @@ class App(ctk.CTk):
                 show=True
             )
 
-            numberDropdown = Widget(
-                Obj=ctk.CTkOptionMenu,
+            numberFrame = Widget(
+                Obj=ctk.CTkFrame,
                 master=filtersFrame.widget,
                 container=filtersFrame.children,
+                ID='numberFrame',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'fg_color': "transparent"
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.TOP,
+                    'expand': True
+                },
+                show=True
+            )
+
+            Widget(
+                Obj=ctk.CTkLabel,
+                master=numberFrame.widget,
+                container=numberFrame.children,
+                ID='numberLabel',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'text': 'NIF/NIE:',
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.LEFT
+                },
+                show=True
+            )
+
+            numberDropdown = Widget(
+                Obj=ctk.CTkOptionMenu,
+                master=numberFrame.widget,
+                container=numberFrame.children,
                 ID='numberDropdown',
                 locator=ctk.CTkBaseClass.pack,
                 forgetter=ctk.CTkBaseClass.pack_forget,
                 params={
-                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='NIF/NIE')
+                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='NIF/NIE'),
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.LEFT
+                },
+                show=True
+            )
+
+            dateFrame = Widget(
+                Obj=ctk.CTkFrame,
+                master=filtersFrame.widget,
+                container=filtersFrame.children,
+                ID='startDateFrame',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'fg_color': "transparent"
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.TOP,
+                    'expand': True
+                },
+                show=True
+            )
+
+            Widget(
+                Obj=ctk.CTkLabel,
+                master=dateFrame.widget,
+                container=dateFrame.children,
+                ID='startDateLabel',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'text': 'Desde:',
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
                     'padx': WINDOW_WIDTH / 100,
@@ -983,8 +1063,8 @@ class App(ctk.CTk):
 
             startDateEntry = Widget(
                 Obj=DateEntry,
-                master=filtersFrame.widget,
-                container=filtersFrame.children,
+                master=dateFrame.widget,
+                container=dateFrame.children,
                 ID='startDateEntry',
                 locator=DateEntry.pack,
                 forgetter=DateEntry.pack_forget,
@@ -992,7 +1072,9 @@ class App(ctk.CTk):
                     'locale': 'es_ES',
                     'selectmode': 'day',
                     'showweeknumbers': False,
-                    'showothermonthdays': False
+                    'showothermonthdays': False,
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
                     'padx': WINDOW_WIDTH / 100,
@@ -1004,8 +1086,8 @@ class App(ctk.CTk):
             
             finalDateEntry = Widget(
                 Obj=DateEntry,
-                master=filtersFrame.widget,
-                container=filtersFrame.children,
+                master=dateFrame.widget,
+                container=dateFrame.children,
                 ID='finalDateEntry',
                 locator=DateEntry.pack,
                 forgetter=DateEntry.pack_forget,
@@ -1013,7 +1095,68 @@ class App(ctk.CTk):
                     'locale': 'es_ES',
                     'selectmode': 'day',
                     'showweeknumbers': False,
-                    'showothermonthdays': False
+                    'showothermonthdays': False,
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.RIGHT
+                },
+                show=True
+            )
+            
+            Widget(
+                Obj=ctk.CTkLabel,
+                master=dateFrame.widget,
+                container=dateFrame.children,
+                ID='finalDateLabel',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'text': 'Hasta:',
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.RIGHT
+                },
+                show=True
+            )
+
+            shiftFrame = Widget(
+                Obj=ctk.CTkFrame,
+                master=filtersFrame.widget,
+                container=filtersFrame.children,
+                ID='shiftFrame',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'fg_color': "transparent"
+                },
+                position_params={
+                    'padx': WINDOW_WIDTH / 100,
+                    'pady': WINDOW_HEIGHT / 100,
+                    'side': ctk.TOP,
+                    'expand': True
+                },
+                show=True
+            )
+
+            Widget(
+                Obj=ctk.CTkLabel,
+                master=shiftFrame.widget,
+                container=shiftFrame.children,
+                ID='shiftLabel',
+                locator=ctk.CTkBaseClass.pack,
+                forgetter=ctk.CTkBaseClass.pack_forget,
+                params={
+                    'text': 'Jornada:',
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
                     'padx': WINDOW_WIDTH / 100,
@@ -1022,16 +1165,18 @@ class App(ctk.CTk):
                 },
                 show=True
             )
-            
+
             shiftDropdown = Widget(
                 Obj=ctk.CTkOptionMenu,
-                master=filtersFrame.widget,
-                container=filtersFrame.children,
+                master=shiftFrame.widget,
+                container=shiftFrame.children,
                 ID='shiftDropdown',
                 locator=ctk.CTkBaseClass.pack,
                 forgetter=ctk.CTkBaseClass.pack_forget,
                 params={
-                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='Jornada')
+                    'values': [EMPTY_OPTION,] + Manager.get_uniques(data, col='Jornada'),
+                    'height': WINDOW_HEIGHT / 10,
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
                 },
                 position_params={
                     'padx': WINDOW_WIDTH / 100,
