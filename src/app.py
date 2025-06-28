@@ -1001,7 +1001,7 @@ class App(ctk.CTk):
                 },
                 show=True
             )
-
+            
             finalDateEntry = Widget(
                 Obj=DateEntry,
                 master=filtersFrame.widget,
@@ -1022,7 +1022,7 @@ class App(ctk.CTk):
                 },
                 show=True
             )
-
+            
             shiftDropdown = Widget(
                 Obj=ctk.CTkOptionMenu,
                 master=filtersFrame.widget,

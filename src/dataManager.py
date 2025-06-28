@@ -117,7 +117,7 @@ class Manager():
                     df = df[df[p] == value]
 
             else:
-                df = df[(df[p] >= value[0]) & (df[p] <= value[0])]
+                df = df[(df[p] >= value[0]) & (df[p] <= value[1])]
 
         if as_list:
             return df.values.tolist()
