@@ -90,8 +90,13 @@ class Manager():
 
 
     @staticmethod
-    def get_uniques(df: pd.DataFrame, col: str):
+    def get_uniques(df: pd.DataFrame, col: str) -> list:
         return list(df[col].unique())
+
+
+    @staticmethod
+    def get_min_max(df: pd.DataFrame, col: str) -> tuple:
+        return df[col].min(), df[col].max()
 
 
     @staticmethod

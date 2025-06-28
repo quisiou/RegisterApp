@@ -922,6 +922,7 @@ class App(ctk.CTk):
             modal.resizable(width=False, height=False)
 
             data = Manager.get_dataframe(path=LOG_FILE)
+            min_date = Manager.get_min_max(data, 'Día')[0].split('-')
 
             mainModalFrame = Widget(
                 Obj=ctk.CTkFrame,
@@ -1114,7 +1115,10 @@ class App(ctk.CTk):
                     'showweeknumbers': False,
                     'showothermonthdays': False,
                     'height': WINDOW_HEIGHT / 10,
-                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+                    'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold'),
+                    'day': int(min_date[2]),
+                    'month': int(min_date[1]),
+                    'year': int(min_date[0])
                 },
                 position_params={
                     'padx': (WINDOW_WIDTH / 200, WINDOW_WIDTH / 50),
