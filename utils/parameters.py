@@ -8,7 +8,7 @@ WINDOW_HEIGHT = 400
 
 
 # Directories
-DATA_DIR = Path(Path.cwd(), 'data')
+DATA_DIR = Path(Path.home(), 'Clocker', 'data')
 LOG_FILE = 'log.parquet'
 STAFF_FILE = 'empleados.parquet'
 

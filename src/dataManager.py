@@ -48,6 +48,13 @@ class Manager():
 
 
     @staticmethod
+    def setup() -> None:
+        # Check if directories exist+
+        if not DATA_DIR.exists():
+            DATA_DIR.mkdir(parents=True)
+
+
+    @staticmethod
     def get_dataframe(start=0, size=None, as_list=False, path=None) -> pd.DataFrame:
         '''
         Retrieves (or creates) the dataframe containing the solicited registry
