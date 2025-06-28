@@ -19,9 +19,10 @@ class Widget:
     _forget: Any = None
     _active: bool = None
     _children: dict = None
+    _default: Any = None
 
     def __init__(self, Obj: Any, master: Any, container: dict, ID: str, locator: Any, forgetter: Any,
-                params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False):
+            default: Any = None, params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False):
         '''
         Params:
             Obj (Any): The widget class (any of the possible widgets)
@@ -30,6 +31,7 @@ class Widget:
             ID (str): The identifier of the widget in the container
             locator (Any): The method to locate the widget on the screen
             forgetter (Any): The method to hide the widget from the screen
+            default (Any, Default=None): Default (initial) value for the widget
             params (dict, Default={}): Parameters for the customisation of the widget
             position_params (dict, Default={}): Parameters for the placement of the widget
             active (bool, Default=False): Whether to show directly the widget
@@ -43,6 +45,7 @@ class Widget:
         self._params = position_params
         self._active = active
         self._children = {}
+        self._default = default
 
         # add to the container
         container[ID] = self
@@ -103,6 +106,11 @@ class Widget:
     def children(self) -> dict:
         return self._children
     
+
+    @property
+    def default(self) -> Any:
+        return self._default
+
 
     def active(self) -> bool:
         return self._active
