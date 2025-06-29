@@ -6,6 +6,7 @@ extra.py
 
 # Executable
 clocker_v1.0_linux
+clocker_v1.0_windows.exe
 
 # Version 2.0 of the app
 bootstrapWidget.py
