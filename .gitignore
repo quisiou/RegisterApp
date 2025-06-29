@@ -4,6 +4,9 @@
 # Secrets
 extra.py
 
+# Version 2.0 of the app
+bootstrapWidget.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

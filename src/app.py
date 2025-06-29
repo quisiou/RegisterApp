@@ -103,7 +103,7 @@ class App(ctk.CTk):
         def check_log(event=None) -> None:
             self._children['mainFrame'].hide()
             self._children['logRegistryFrame'].show()
-            self._children['logRegistryFrame']['logTable'].load(path=LOG_FILE)
+            self._children['logRegistryFrame']['logTable'].load(filename=LOG_FILE)
 
         
         def check_staff(event=None) -> None:
@@ -878,7 +878,7 @@ class App(ctk.CTk):
                 logTable.widget.column(col, stretch='NO', width=WINDOW_WIDTH // 5, anchor=TREEVIEW_ANCHOR)
 
             # Add the data to the table
-            logTable.load(path=LOG_FILE)
+            logTable.load(filename=LOG_FILE)
 
             return logTable
 
@@ -896,7 +896,7 @@ class App(ctk.CTk):
                     'Jornada': shiftDropdown.get()
                 }
 
-                table.load(path=LOG_FILE)
+                table.load(filename=LOG_FILE)
 
                 window.destroy()
 
@@ -1328,7 +1328,7 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': lambda: logTable.reload(path=LOG_FILE),
+                'command': lambda: logTable.reload(filename=LOG_FILE),
                 'text': 'Refrescar',
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
