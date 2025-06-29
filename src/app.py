@@ -1030,6 +1030,7 @@ class App(ctk.CTk):
             ))
             modal.title('Búsqueda filtrada')
             modal.resizable(width=False, height=False)
+            modal.attributes('-topmost', True) # On top of all windows
 
             data = Manager.get_dataframe(filename=LOG_FILE)
             min_date = Manager.get_min_max(data, 'Día')[0].split('-')
