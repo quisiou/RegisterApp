@@ -921,7 +921,7 @@ class App(ctk.CTk):
             modal.title('Búsqueda filtrada')
             modal.resizable(width=False, height=False)
 
-            data = Manager.get_dataframe(path=LOG_FILE)
+            data = Manager.get_dataframe(filename=LOG_FILE)
             min_date = Manager.get_min_max(data, 'Día')[0].split('-')
 
             mainModalFrame = Widget(
@@ -1421,7 +1421,7 @@ class App(ctk.CTk):
 
         def show_staff(event=None) -> None:
 
-            data = Manager.get_dataframe(as_list=True, path=STAFF_FILE)
+            data = Manager.get_dataframe(as_list=True, filename=STAFF_FILE)
 
             tree = self._children['staffRegistryFrame']['staffTable'].widget
 

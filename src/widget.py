@@ -161,13 +161,13 @@ class Table(Widget):
 
     def load(self, path: Path | PosixPath) -> None:
 
-        data = Manager.get_dataframe(as_list=True, path=path)
+        data = Manager.get_dataframe(as_list=True, filename=path)
 
         # Delete possible items
         self.clear()
 
         if self._filters is not None:
-            data = Manager.filter_df(path=path, params=self._filters, as_list=True)
+            data = Manager.filter_df(filename=path, params=self._filters, as_list=True)
 
         # Insert rows
         for entry in data: self.insert_row(entry)

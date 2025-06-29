@@ -49,26 +49,37 @@ class Manager():
 
     @staticmethod
     def setup() -> None:
+        '''
+        Prepares all dependencies for the program to run correctly
+        '''
+
         # Check if directories exist+
         if not DATA_DIR.exists():
             DATA_DIR.mkdir(parents=True)
 
 
     @staticmethod
-    def get_dataframe(start=0, size=None, as_list=False, path=None) -> pd.DataFrame:
+    def get_dataframe(size: int = None, as_list: bool = False,
+            filename: str | Path | PosixPath = None) -> pd.DataFrame | list:
         '''
         Retrieves (or creates) the dataframe containing the solicited registry
 
-        :returns output (pd.DataFrame): The information
+        Params:
+            start (int, Default=0): Starting index (row) for the dataframe
+            size (int, Default=None): Maximum number of rows to be retrieved
+            as_list (bool, Default=False): Whether to return a DataFrame or a list of rows
+            filename (str | Path | PosixPath, Default=None): Name of the file storing the data
+
+        :returns output (pd.DataFrame | list): The information
         '''
 
-        if Path(DATA_DIR, path).exists():
-            df = pd.read_parquet(Path(DATA_DIR, path), 'pyarrow')
+        if Path(DATA_DIR, filename).exists():
+            df = pd.read_parquet(Path(DATA_DIR, filename), 'pyarrow')
 
-        elif path == LOG_FILE:
+        elif filename == LOG_FILE:
             df = pd.DataFrame(columns=['NIF/NIE', 'Día', 'Hora', 'Jornada'])
         
-        elif path == STAFF_FILE:
+        elif filename == STAFF_FILE:
             df = pd.DataFrame(columns=['NIF/NIE', 'Nombre', 'Apellido1', 'Apellido2', 'Código_Postal',
                                         'Dirección', 'Email', 'Tfno', 'Contraseña', 'Admin'])
 
@@ -86,29 +97,64 @@ class Manager():
 
     @staticmethod
     def get_columns(which: Literal['staff', 'logs'] = None) -> tuple:
+        '''
+        Retrieves the column names of the specified dataframe
+
+        :params (Literal['staff', 'logs'], Default=None) which: The dataframe
+
+        :returns output (tuple): The column names
+        '''
 
         if which == 'staff':
-            df = Manager.get_dataframe(path=STAFF_FILE)
+            df = Manager.get_dataframe(filename=STAFF_FILE)
         
         else:
-            df = Manager.get_dataframe(path=LOG_FILE)
+            df = Manager.get_dataframe(filename=LOG_FILE)
 
         return tuple(df.columns)
 
 
     @staticmethod
     def get_uniques(df: pd.DataFrame, col: str) -> list:
+        '''
+        Retrieves the unique values of the specified column
+
+        Params:
+            df (pd.DataFrame): The dataframe
+            col (str): The column to get the values from
+
+        :returns output (list): The unique values
+        '''
+
         return list(df[col].unique())
 
 
     @staticmethod
     def get_min_max(df: pd.DataFrame, col: str) -> tuple:
+        '''
+        Retrieves the minimum and maximum values of the specified column
+
+        Params:
+            df (pd.DataFrame): The dataframe
+            col (str): The column to get the values from
+
+        :returns output (list): The min and max values
+        '''
+
         return df[col].min(), df[col].max()
 
 
     @staticmethod
-    def export_df(colnames=None, rows=None, path: Path | PosixPath = None) -> None:
-        
+    def export_df(colnames: list | tuple, rows: list | tuple, path: str | Path | PosixPath) -> None:
+        '''
+        Exports the current table into a CSV file
+
+        Params:
+            colnames (list | tuple): The column names for the dataframe
+            rows (list | tuple): The rows of the dataframe
+            path (str | Path | PosixPath): Location for the CSV file to be saved
+        '''
+
         df = pd.DataFrame(columns=colnames)
 
         for row in rows:
@@ -118,9 +164,19 @@ class Manager():
         
 
     @staticmethod
-    def filter_df(path: Path | PosixPath, params: dict, as_list: bool = False) -> pd.DataFrame:
+    def filter_df(filename: str | Path | PosixPath, params: dict, as_list: bool = False) -> pd.DataFrame | list:
+        '''
+        Returns a dataframe extracted from `path`, filters it and returns it
+
+        Params:
+            filename (str | Path | PosixPath): Name of the file storing the data
+            params (dict): The filters to apply
+            as_list (bool, Default=False): Whether to return a DataFrame or a list of rows
+
+        :returns output (pd.DataFrame | list): The filtered information
+        '''
         
-        df = Manager.get_dataframe(path=path)
+        df = Manager.get_dataframe(filename=filename)
 
         for p, value in params.items():
             
@@ -140,6 +196,14 @@ class Manager():
 
     @staticmethod
     def __valid_id(num: str) -> bool:
+        '''
+        Checks whether an ID number has a valid format
+
+        :params (str) num: The ID number
+
+        :returns output (bool): `True` if the ID number is valid; `False` otherwise
+        '''
+
         is_nif = (len(num) == 9) and (num[:8].isnumeric()) and (num[8].isalpha())
         is_nie = (len(num) == 9) and (num[1:8].isnumeric()) and (num[8].isalpha()) and (num[0] in ['X', 'Y', 'Z'])
 
@@ -148,6 +212,15 @@ class Manager():
 
     @staticmethod
     def log_in(num: str, passwd: str) -> bool:
+        '''
+        Checks whether the passed credentials correspond to a member in the database
+
+        Params:
+            num (str): The ID number
+            passwd (str): The password associated with that ID number
+
+        :returns output (bool): `True` if the log in has been successful; `False` otherwise
+        '''
 
         # Verify entries
         if num == '' or passwd == '':
@@ -157,7 +230,7 @@ class Manager():
             raise Manager.InvalidID()
         
         # Validate credentials
-        df = Manager.get_dataframe(path=STAFF_FILE)
+        df = Manager.get_dataframe(filename=STAFF_FILE)
 
         employee = df[df['NIF/NIE'] == num]
 
@@ -175,7 +248,7 @@ class Manager():
         post_code: str, address: str, email: str, phone: str,
         number: str, passwd: str, re_passwd: str, isAdmin: int) -> None:
         '''
-        Adds a new worker's info to the dataframe
+        Adds a new worker's information to the dataframe
 
         Params:
             name (str): Employee's name
@@ -188,10 +261,11 @@ class Manager():
             number (str): ID card number
             passwd (str): Employee's password
             re_passwd (str): Employee's password again (to check)
+            isAdmin (int): Whether the user has been granted admin priviledges (`1`) or not (`0`)
         '''
 
         # Get dataframe
-        df = Manager.get_dataframe(path=STAFF_FILE)
+        df = Manager.get_dataframe(filename=STAFF_FILE)
 
         # Verify entries
         if not Manager.__valid_id(number):
@@ -219,37 +293,35 @@ class Manager():
         '''
         Checks whether a shift is starting or ending
 
-        :params (str) number: ID card number
+        :params (str) number: ID number
 
-        :returns output (bool): `True` if the shift is starting, `False` otherwise
+        :returns output (bool): `True` if is the beginning of the user's shift; `False` otherwise
         '''
         
-        logs = Manager.get_dataframe(path=LOG_FILE)
+        logs = Manager.get_dataframe(filename=LOG_FILE)
 
         return len(logs[logs['NIF/NIE'] == number]) % 2 == 0
 
 
     @staticmethod
-    def add_entry(number: str) -> bool:
+    def add_entry(number: str) -> None:
         '''
         Adds a new log to the dataframe
 
-        Params:
-            number (str): ID card number
-            password (str): Employee's password
+        :params (str) number: ID number
         '''
 
         if not Manager.__valid_id(number):
             raise Manager.InvalidID()
 
-        df = Manager.get_dataframe(path=STAFF_FILE)
+        df = Manager.get_dataframe(filename=STAFF_FILE)
 
         employee = df[df['NIF/NIE'] == number]
 
         if employee is None:
             raise Manager.NotFoundID()
 
-        logs = Manager.get_dataframe(path=LOG_FILE)
+        logs = Manager.get_dataframe(filename=LOG_FILE)
         dt = str(datetime.now()).split()
 
         startShift = Manager.begin_shift(number)
