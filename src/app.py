@@ -17,6 +17,10 @@ from utils.appearance import *
 class App(ctk.CTk):
     '''
     Main application class
+
+    Attributes:
+        _children (dict, Default=None):     This widget's children widgets
+        _cookies (dict, Default=None):      Information to be stored throughout the execution of the app
     '''
 
     _children: dict = None # Children widgets of the app
@@ -24,6 +28,12 @@ class App(ctk.CTk):
 
     def __init__(self, width: int = WINDOW_WIDTH,
         height: int = WINDOW_HEIGHT, custom_theme: str = None):
+        '''
+        Params:
+            width (int, Default=`WINDOW_WIDTH`): The main window's width
+            height (int, Default=`WINDOW_HEIGHT`): The main window's height
+            custom_theme (str, Default=None): A custom theme to use for the widgets
+        '''
 
         # set custom theme
         theme_path = Path(Path.cwd(), 'themes', f'{custom_theme}.json')
@@ -55,9 +65,17 @@ class App(ctk.CTk):
         self.__initialize()
 
 
-    def __centerWindowOnScreen(self, screen_width, screen_height, width: int, height: int):
+    def __centerWindowOnScreen(self, screen_width: int, screen_height: int, width: int, height: int) -> str:
         '''
-        Centers the window to the main display/monitor
+        Obtains a formatted string to place a window in the middle of the screen
+
+        Params:
+            screen_width (int): The main display/monitor width
+            screen_height (int): The main display/monitor height
+            width (int): The main window's width
+            height (int): The main window's height
+
+        :returns output (str): Formatted string indicating size and position of the window
         '''
 
         x = int((screen_width - width) / 2)
@@ -65,19 +83,27 @@ class App(ctk.CTk):
         return f"{width}x{height}+{x}+{y}"
 
 
-    def __unfocus(self, e=None) -> None:
+    def __unfocus(self, event=None) -> None:
         '''
         Unfocuses the actual focused widget (by focusing the main window)
 
-        :params (Any, Default=None) e: The event which triggered this method
+        :params (Any, Default=None) event: The event which triggered this method
         '''
 
         self.focus()
     
 
     def __initialize_main(self) -> None:
+        '''
+        Initializes the main screen's widgets (once logged in)
+        '''
 
         def log_out(event=None) -> None:
+            '''
+            Closes the user's session
+
+            :params (Any, Default=None) event: The event which triggered this method
+            '''
 
             self._children['mainFrame'].hide()
             self._children['logInFrame'].show()
@@ -96,22 +122,45 @@ class App(ctk.CTk):
 
 
         def change_to_create(event=None) -> None:
+            '''
+            Hides the main menu and loads the menu for adding staff information to the database
+
+            :params (Any, Default=None) event: The event which triggered this method
+            '''
+
             self._children['mainFrame'].hide()
             self._children['createUserFrame'].show()
 
         
         def check_log(event=None) -> None:
+            '''
+            Hides the main menu and loads the log history menu
+
+            :params (Any, Default=None) event: The event which triggered this method
+            '''
+
             self._children['mainFrame'].hide()
             self._children['logRegistryFrame'].show()
             self._children['logRegistryFrame']['logTable'].load(filename=LOG_FILE)
 
         
         def check_staff(event=None) -> None:
+            '''
+            Hides the main menu and loads the manu for checking the staff's information
+
+            :params (Any, Default=None) event: The event which triggered this method
+            '''
+
             self._children['mainFrame'].hide()
             self._children['staffRegistryFrame'].show()
 
 
         def add_log(event=None) -> None:
+            '''
+            Registers a new entry in the log history
+
+            :params (Any, Default=None) event: The event which triggered this method
+            '''
 
             if Manager.begin_shift(self._cookies['user']):
                 self._children['mainFrame']['containerFrame']['addLogButton'].widget.configure(text="Finalizar jornada")
@@ -272,8 +321,18 @@ class App(ctk.CTk):
 
 
     def __initialize_login(self) -> None:
+        '''
+        Initializes the login screen's widgets (initial frame)
+        '''
 
         def log_in(event=None, frame: Widget = None) -> None:
+            '''
+            Tries to log in given some credentials
+
+            Params:
+                event (Any, Default=None): The event which triggered this method
+                frame (Widget, Default=None): The frame containing the credential entries
+            '''
 
             try:
                 passwd = frame.children['personalCodeEntry'].get()
@@ -429,8 +488,17 @@ class App(ctk.CTk):
 
 
     def __initialize_create(self) -> None:
+        '''
+        Initializes the staff creation screen's widgets
+        '''
 
-        def createUser(*entries) -> None:
+        def createUser(*entries: list | tuple) -> None:
+            '''
+            Retrieves all the information, and tries to create a new entry on the staff database
+
+            :params (list | tuple) entries: The Entry widgets with the information
+            '''
+
             try:
                 for entry in entries:
                     if entry.get() == '':
@@ -446,6 +514,12 @@ class App(ctk.CTk):
 
 
         def cancel(*entries) -> None:
+            '''
+            Hides the creation menu and loads the main menu, clearing all the information entries
+
+            :params (list | tuple) entries: The Entry widgets with the information
+            '''
+
             self._children['createUserFrame'].hide()
             self._children['mainFrame'].show()
 
@@ -844,6 +918,12 @@ class App(ctk.CTk):
     def __initialize_log_registry(self) -> None:
 
         def cancel(event=None) -> None:
+            '''
+            Hides the log history table menu and loads the main menu
+
+            :params (Any, Default=None) event: The event which triggered this method
+            '''
+
             self._children['logRegistryFrame'].hide()
             self._children['mainFrame'].show()
 
@@ -851,6 +931,14 @@ class App(ctk.CTk):
 
 
         def add_entries(event=None) -> Table:
+            '''
+            Initializes the table, loading all the required information
+
+            :params (Any, Default=None) event: The event which triggered this method
+
+            :returns output (Table): The created table
+            '''
+
             colnames = Manager.get_columns(which='logs')
 
             logTable = Table(
@@ -884,8 +972,23 @@ class App(ctk.CTk):
 
 
         def filter_table(event=None, table: Table = None) -> None:
+            '''
+            Creates a new window with all the table filters
 
-            def save_filters(event=None, window: Window = None, table: Table = None, params: dict = None) -> None:
+            Params:
+                event (Any, Default=None): The event which triggered this method
+                frame (Widget, Default=None): The frame containing the filters
+            '''
+
+            def save_filters(event=None, window: Window = None, table: Table = None) -> None:
+                '''
+                Saves the selected filters into the table's designated variable, to after be applied
+
+                Params:
+                    event (Any, Default=None): The event which triggered this method
+                    window (Window, Default=None): The pop-up window designated to the table filters
+                    table (Table, Default=None): The log history table
+                '''
                 
                 table.filters = {
                     'NIF/NIE': numberDropdown.get(),
@@ -901,7 +1004,14 @@ class App(ctk.CTk):
                 window.destroy()
 
 
-            def set_current_filters():
+            def set_current_filters(event=None) -> None:
+                '''
+                Sets the values of the filters to the ones that are already applied (default ones if not applied)
+
+                Params:
+                    event (Any, Default=None): The event which triggered this method
+                '''
+
                 filters = self._children['logRegistryFrame']['logTable'].filters
 
                 if filters is not None:
@@ -1241,6 +1351,11 @@ class App(ctk.CTk):
 
 
         def export_table(event=None) -> None:
+            '''
+            Exports the table as it is in that moment to a CSV file
+
+            :params (Any, Default=None) event: The event which triggered this method
+            '''
 
             tree: Treeview = self._children['logRegistryFrame']['logTable'].widget
             columns = tree['columns']
@@ -1413,30 +1528,27 @@ class App(ctk.CTk):
     def __initialize_staff_registry(self) -> None:
 
         def cancel(event=None) -> None:
+            '''
+            Hides the staff table menu and loads the main menu
+
+            :params (Any, Default=None) event: The event which triggered this method
+            '''
+
             self._children['staffRegistryFrame'].hide()
             self._children['mainFrame'].show()
 
             self.__unfocus()
 
 
-        def show_staff(event=None) -> None:
-
-            data = Manager.get_dataframe(as_list=True, filename=STAFF_FILE)
-
-            tree = self._children['staffRegistryFrame']['staffTable'].widget
-
-            # Delete possible items
-            tree.delete(*tree.get_children())
-
-            for entry in data:
-                tree.insert(
-                    parent='',
-                    index=0, # New rows are inserted at the beginning
-                    values=entry
-                )
-
-
         def add_entries(event=None) -> Table:
+            '''
+            Initializes the table, loading all the required information
+
+            :params (Any, Default=None) event: The event which triggered this method
+
+            :returns output (Table): The created table
+            '''
+
             colnames = Manager.get_columns(which='staff')
 
             staffTable = Table(
@@ -1464,7 +1576,7 @@ class App(ctk.CTk):
                 staffTable.widget.column(col, stretch='NO', width=WINDOW_WIDTH // 6, anchor=TREEVIEW_ANCHOR)
 
             # Add the data to the table
-            show_staff()
+            staffTable.load(filename=STAFF_FILE)
 
             return staffTable
 
