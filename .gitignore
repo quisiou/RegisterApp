@@ -8,9 +8,9 @@ extra.py
 clocker_v1.0_linux
 clocker_v1.0_windows.exe
 
-# Version 2.0 of the app
-bootstrapWidget.py
-bootstrapApp.py
+# Version 1.0 of the app
+widget.py
+app.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
