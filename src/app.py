@@ -8,6 +8,7 @@ from src.dataManager import Manager
 
 from pathlib import Path
 from datetime import datetime
+from PIL import Image
 
 from src.widget import *
 
@@ -43,7 +44,7 @@ class App(ctk.CTk):
             ctk.set_default_color_theme(theme_path)
 
         super().__init__()
-
+        
         # window-related
         self.geometry(self.__centerWindowOnScreen(
             self.winfo_screenwidth(),
@@ -52,7 +53,7 @@ class App(ctk.CTk):
             height
         ))
         self.resizable(width=False, height=False)
-        self.title('Clocker')
+        self.title(APP_NAME)
 
         # Attributes
         self._children = {}
@@ -111,7 +112,6 @@ class App(ctk.CTk):
             if self._cookies['admin']:
                 self._children['mainFrame']['containerFrame']['checkLogButton'].deactivate()
                 self._children['mainFrame']['containerFrame']['checkStaffButton'].deactivate()
-                self._children['mainFrame']['containerFrame']['addStaffButton'].deactivate()
 
             else:
                 self._children['mainFrame']['containerFrame']['addLogButton'].deactivate()
@@ -121,17 +121,6 @@ class App(ctk.CTk):
             self._cookies = None
 
 
-        def change_to_create(event=None) -> None:
-            '''
-            Hides the main menu and loads the menu for adding staff information to the database
-
-            :params (Any, Default=None) event: The event which triggered this method
-            '''
-
-            self._children['mainFrame'].hide()
-            self._children['createUserFrame'].show()
-
-        
         def check_log(event=None) -> None:
             '''
             Hides the main menu and loads the log history menu
@@ -208,28 +197,6 @@ class App(ctk.CTk):
             }
         )
         
-        Widget(
-            Obj=ctk.CTkButton,
-            master=containerFrame.widget,
-            container=containerFrame.children,
-            ID='addStaffButton',
-            locator=ctk.CTkBaseClass.pack,
-            forgetter=ctk.CTkBaseClass.pack_forget,
-            params={
-                'command': change_to_create,
-                'text': 'Crear usuario',
-                'height': WINDOW_HEIGHT / 10,
-                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
-            },
-            position_params={
-                'side': ctk.TOP,
-                'anchor': ctk.CENTER,
-                'padx': WINDOW_WIDTH / 25,
-                'pady': WINDOW_HEIGHT / 25
-            },
-            active=False
-        )
-
         Widget(
             Obj=ctk.CTkButton,
             master=containerFrame.widget,
@@ -350,7 +317,6 @@ class App(ctk.CTk):
                 if isAdmin:
                     self._children['mainFrame']['containerFrame']['checkLogButton'].activate()
                     self._children['mainFrame']['containerFrame']['checkStaffButton'].activate()
-                    self._children['mainFrame']['containerFrame']['addStaffButton'].activate()
 
                 else:
                     starts = Manager.begin_shift(idNum)
@@ -493,7 +459,26 @@ class App(ctk.CTk):
         Initializes the staff creation screen's widgets
         '''
 
-        def createUser(*entries: list | tuple) -> None:
+        def back(entries: list | tuple) -> None:
+            '''
+            Hides the creation menu and loads the main menu, clearing all the information entries
+
+            :params (list | tuple) entries: The Entry widgets with the information
+            '''
+
+            self._children['createUserFrame'].hide()
+            self._children['staffRegistryFrame'].show()
+            self._children['staffRegistryFrame']['staffTable'].load(filename=STAFF_FILE)
+
+            for entry in entries:
+                entry.clear()
+
+            entries[-1].widget.deselect()
+
+            self.__unfocus()
+
+
+        def createUser(entries: list | tuple) -> None:
             '''
             Retrieves all the information, and tries to create a new entry on the staff database
 
@@ -507,25 +492,10 @@ class App(ctk.CTk):
 
                 Manager.add_worker(*[entry.get() for entry in entries])
                 messagebox.showinfo(message='Empleado añadido correctamente.')
+                back(entries)
 
             except Manager.ManagerException as e:
                 messagebox.showerror(message=str(e))
-
-            self.__unfocus()
-
-
-        def cancel(*entries) -> None:
-            '''
-            Hides the creation menu and loads the main menu, clearing all the information entries
-
-            :params (list | tuple) entries: The Entry widgets with the information
-            '''
-
-            self._children['createUserFrame'].hide()
-            self._children['mainFrame'].show()
-
-            for entry in entries:
-                entry.clear()
 
             self.__unfocus()
 
@@ -878,8 +848,8 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': lambda: cancel(nameEntry, lastname1Entry, lastname2Entry, postalCodeEntry, addressEntry,
-                                emailEntry, phoneNumberEntry, idNumberEntry, passwordEntry, repeatPasswordEntry),
+                'command': lambda: back([nameEntry, lastname1Entry, lastname2Entry, postalCodeEntry, addressEntry,
+                            emailEntry, phoneNumberEntry, idNumberEntry, passwordEntry, repeatPasswordEntry, adminCheckBox]),
                 'text': 'Volver',
                 'border_color': '#1f538d',
                 'border_width': 2,
@@ -902,8 +872,8 @@ class App(ctk.CTk):
             locator=ctk.CTkBaseClass.pack,
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
-                'command': lambda: createUser(nameEntry, lastname1Entry, lastname2Entry, postalCodeEntry, addressEntry,
-                                emailEntry, phoneNumberEntry, idNumberEntry, passwordEntry, repeatPasswordEntry, adminCheckBox),
+                'command': lambda: createUser([nameEntry, lastname1Entry, lastname2Entry, postalCodeEntry, addressEntry,
+                            emailEntry, phoneNumberEntry, idNumberEntry, passwordEntry, repeatPasswordEntry, adminCheckBox]),
                 'text': 'Crear',
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
@@ -1446,7 +1416,7 @@ class App(ctk.CTk):
             forgetter=ctk.CTkBaseClass.pack_forget,
             params={
                 'command': lambda: logTable.reload(filename=LOG_FILE),
-                'text': 'Refrescar',
+                'text': 'Recargar',
                 'height': WINDOW_HEIGHT / 10,
                 'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
             },
@@ -1582,6 +1552,17 @@ class App(ctk.CTk):
 
             return staffTable
 
+
+        def change_to_create(event=None) -> None:
+            '''
+            Hides the staff table and loads the menu for adding staff information to the database
+
+            :params (Any, Default=None) event: The event which triggered this method
+            '''
+
+            self._children['staffRegistryFrame'].hide()
+            self._children['createUserFrame'].show()
+
         
         # The frame containing everything
         staffRegistryFrame = Widget(
@@ -1662,6 +1643,26 @@ class App(ctk.CTk):
                 'padx': WINDOW_WIDTH / 100,
                 'pady': WINDOW_HEIGHT / 100,
                 'side': ctk.LEFT
+            }
+        )
+
+        Widget(
+            Obj=ctk.CTkButton,
+            master=buttonsFrame.widget,
+            container=buttonsFrame.children,
+            ID='addStaffButton',
+            locator=ctk.CTkBaseClass.pack,
+            forgetter=ctk.CTkBaseClass.pack_forget,
+            params={
+                'command': change_to_create,
+                'text': 'Nuevo',
+                'height': WINDOW_HEIGHT / 10,
+                'font': ctk.CTkFont(family='Calibri', size=WINDOW_HEIGHT // 20, weight='bold')
+            },
+            position_params={
+                'padx': WINDOW_WIDTH / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': ctk.RIGHT
             }
         )
 
