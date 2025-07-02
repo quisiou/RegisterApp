@@ -1,5 +1,6 @@
 from pathlib import Path, PosixPath
 import pandas as pd
+import numpy as np
 
 from datetime import datetime
 
@@ -130,18 +131,33 @@ class Manager():
 
 
     @staticmethod
-    def get_min_max(df: pd.DataFrame, col: str) -> tuple:
+    def get_min(df: pd.DataFrame, col: str) -> str:
         '''
-        Retrieves the minimum and maximum values of the specified column
+        Retrieves the minimum value of the specified column
 
         Params:
             df (pd.DataFrame): The dataframe
             col (str): The column to get the values from
 
-        :returns output (list): The min and max values
+        :returns output (str): The min value
         '''
 
-        return df[col].min(), df[col].max()
+        return str(datetime.now().date()) if df[col].empty else df[col].min()
+
+
+    @staticmethod
+    def get_max(df: pd.DataFrame, col: str) -> str:
+        '''
+        Retrieves the maximum value of the specified column
+
+        Params:
+            df (pd.DataFrame): The dataframe
+            col (str): The column to get the values from
+
+        :returns output (str): The max value
+        '''
+
+        return str(datetime.now().date()) if df[col].empty else df[col].max()
 
 
     @staticmethod
