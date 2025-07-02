@@ -24,6 +24,8 @@ LOG_FILE = 'log.parquet'
 STAFF_FILE = 'empleados.parquet'
 
 IMG_DIR = Path(Path.cwd(), 'img')
+DEFAULT_EXPORT_DIR = Path.home()
+DEFAULT_EXPORT_NAME = 'registro.csv'
 
 
 # General stuff

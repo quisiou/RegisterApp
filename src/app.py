@@ -1340,11 +1340,15 @@ class App(ctk.CTk):
             # Get export path
             path = filedialog.asksaveasfilename(
                 title='Seleccionar ruta de destino',
-                filetypes=(('CSV file', '*.csv'), ('All files', '*.*')),
-                initialdir=Path.home()
+                filetypes=(('CSV file', '*.csv'),),
+                initialdir=DEFAULT_EXPORT_DIR,
+                initialfile=DEFAULT_EXPORT_NAME
             )
 
             if path:
+                if not path.endswith('.csv'):
+                    path += '.csv'
+
                 Manager.export_df(colnames=columns, rows=rows, path=path)
 
         
