@@ -153,6 +153,7 @@ class App(ctk.CTk):
 
             self._children['mainFrame'].hide()
             self._children['staffRegistryFrame'].show()
+            self._children['staffRegistryFrame']['staffTable'].load(filename=STAFF_FILE)
 
 
         def add_log(event=None) -> None:
