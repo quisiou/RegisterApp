@@ -8,7 +8,6 @@ from src.dataManager import Manager
 
 from pathlib import Path
 from datetime import datetime
-from PIL import Image
 
 from src.widget import *
 
