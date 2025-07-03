@@ -28,7 +28,7 @@ class Frame(ContainerWidget):
 
         super().__init__(
             Obj=TkbFrame,
-            master=parent.widget if type(parent) == ContainerWidget else parent,
+            master=parent.widget if isinstance(parent, ContainerWidget) else parent,
             container=parent.content,
             ID=ID,
             locator=locator,

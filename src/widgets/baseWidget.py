@@ -131,10 +131,10 @@ class BaseWidget(ABC):
 
 class Widget(BaseWidget, ABC):
     '''
-    Global abstract class which represents a user-interactive Widget (therefore, has a value stored)
+    Global abstract class which represents a user-interactive Widget
 
     Attributes:
-        _default (Any, Default=None):               Default value of the widget's holder variable (`_var`)
+        _default (Any, Default=None):               Widget's default value (if any)
     '''
 
     _default: Any = None
@@ -212,7 +212,7 @@ class Widget(BaseWidget, ABC):
 
     def restore(self) -> None:
         '''
-        Restore widget's value to the default one
+        Restore widget's value to the default one (if possible)
         '''
 
         if self.get() != self._default:

@@ -2,6 +2,7 @@ import ttkbootstrap as tkb
 
 from src.widgets.frame import Frame
 from src.widgets.textEntry import TextEntry
+from src.widgets.button import Button
 
 from pathlib import Path, PosixPath
 
@@ -143,8 +144,23 @@ class App(tkb.Window):
             show=True
         )
 
-        TextEntry(
+        containerFrame = Frame(
             parent=logInFrame,
+            locator='pack',
+            ID='containerFrame',
+            params={
+                
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'expand': True,
+            },
+            show=True
+        )
+
+        idEntry = TextEntry(
+            parent=containerFrame,
             locator='pack',
             ID='idEntry',
             params={
@@ -154,13 +170,44 @@ class App(tkb.Window):
                 'padx': WINDOW_HEIGHT / 100,
                 'pady': WINDOW_HEIGHT / 100,
                 'side': tkb.TOP,
-                'fill': tkb.BOTH
             },
             show=True
         )
 
-        # entry = tb.Entry(logInFrame)
-        # entry.pack(pady=40)
+        clearButton = Button(
+            parent=containerFrame,
+            locator='pack',
+            ID='clearButton',
+            params={
+                'text': 'Clear Text!',
+                'command': lambda: idEntry.restore(),
+                'style': 'info.Outline.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.TOP
+            },
+            show=True
+        )
+
+        logInButton = Button(
+            parent=containerFrame,
+            locator='pack',
+            ID='logInButton',
+            params={
+                'text': 'Get Text!',
+                'command': lambda: print(idEntry.get()),
+                'style': 'info.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.TOP
+            },
+            show=True
+        )
+
 
 
     def __initialize(self) -> None:

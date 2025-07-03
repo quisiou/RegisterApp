@@ -1,20 +1,20 @@
 from src.widgets.baseWidget import Widget, ContainerWidget
 
-from ttkbootstrap import Entry as TkbEntry
+from ttkbootstrap import Button as TkbButton
 
 from typing import Any, Literal
 
 
 
 
-class TextEntry(Widget):
+class Button(Widget):
     '''
-    Represents a text entry
+    Represents a normal, clickable button
     '''
 
 
     def __init__(self, parent: ContainerWidget, locator: Literal['pack', 'grid', 'place'], ID: str = None,
-            params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False, default: Any = ''):
+            params: dict = {}, position_params: dict = {}, active: bool = True, show: bool = False, default: Any = None):
         '''
         Params:
             parent (ContainerWidget): The parent of the new widget
@@ -25,11 +25,11 @@ class TextEntry(Widget):
             position_params (dict, Default={}): Parameters for the placement of the widget
             active (bool, Default=True): Whether to show the widget when `show` method is called
             show (bool, Default=False): Whether to show the widget directly,
-            default (Any, Default=''): Default (initial) value for the widget
+            default (Any, Default=None): Default (initial) value for the widget
         '''
 
         super().__init__(
-            Obj=TkbEntry,
+            Obj=TkbButton,
             master=parent.widget,
             container=parent.content,
             ID=ID,
@@ -41,25 +41,16 @@ class TextEntry(Widget):
             default=default
         )
 
-        self._widget.bind(sequence="<Escape>", func=parent.focus)
 
-
-    def get(self) -> str:
+    def get(self) -> None:
         '''
-        Gets the widget's text
+        Buttons don't return a value
         '''
-
-        return self._widget.get()
+        return None
            
     
     def set(self, value: str = None) -> None:
         '''
-        Sets the widget's text to `value`
+        Buttons don't have a value to be set
         '''
-
-        # Clear entry
-        if self._widget.get() != '':
-            self._widget.delete(0, 'end')
-
-        # Set new value
-        self._widget.insert(0, value)
+        return None
