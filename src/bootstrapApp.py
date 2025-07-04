@@ -1,4 +1,5 @@
 import ttkbootstrap as tkb
+from ttkbootstrap.dialogs import Messagebox
 
 from src.widgets.frame import Frame
 from src.widgets.textEntry import TextEntry
@@ -9,6 +10,8 @@ from pathlib import Path, PosixPath
 from typing import Any
 
 from utils.parameters import *
+
+from src.dataManager import Manager
 
 class App(tkb.Window):
     '''
@@ -122,12 +125,213 @@ class App(tkb.Window):
         return self._content[key]
 
 
+    def __setitem__(self, key, value):
+        self._content[key] = value
+
+
     @property
     def content(self) -> dict:
         return self._content
 
 
+    def __change_to_main(self, current_frame: Frame) -> None:
+        '''
+        Change to mainFrame
+
+        :params Frame current_frame: The frame the user is in this moment
+        '''
+
+        current_frame.hide()
+        self['mainFrame'].show()
+
+
+    def __initialize_main(self) -> None:
+        '''
+        Initializes the main screen's widgets (once logged in)
+        '''
+
+        def log_out() -> None:
+            '''
+            Closes the user's session
+            '''
+
+            self['mainFrame'].hide()
+            self['logInFrame'].show()
+
+            # Filters in tables do not save between frames, so no need to clear them
+            self._cookies = None
+
+        
+        def add_log() -> None:
+            '''
+            Registers a new entry in the log history
+            '''
+
+            starts = Manager.begin_shift(self._cookies['user'])
+            
+            doLog = Messagebox.yesno(
+                message=f'¿{"Comenzar" if starts else "Finalizar"} la jornada?',
+                title='Fichar hora',
+                alert=False,
+                parent=self
+            )
+
+            if doLog != 'No':
+                Manager.add_entry(self._cookies['user'])
+
+
+        mainFrame = Frame(
+            parent=self,
+            locator='pack',
+            ID='mainFrame',
+            params={
+                
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'fill': tkb.BOTH,
+                'expand': True,
+                'anchor': tkb.CENTER
+            }
+        )
+
+        containerFrame = Frame(
+            parent=mainFrame,
+            locator='pack',
+            ID='containerFrame',
+            params={
+                
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'expand': True,
+                'anchor': tkb.CENTER
+            }
+        )
+
+        addLogButton = Button(
+            parent=containerFrame,
+            locator='pack',
+            ID='addLogButton',
+            params={
+                'text': 'Fichar',
+                'command': add_log,
+                'style': 'info.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.TOP,
+                'anchor': tkb.CENTER
+            }
+        )
+
+        checkLogButton = Button(
+            parent=containerFrame,
+            locator='pack',
+            ID='checkLogButton',
+            params={
+                'text': 'Registros',
+                'command': lambda: print('Mirar registros'),
+                'style': 'info.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.TOP,
+                'anchor': tkb.CENTER
+            }
+        )
+
+        checkStaffButton = Button(
+            parent=containerFrame,
+            locator='pack',
+            ID='checkStaffButton',
+            params={
+                'text': 'Personal',
+                'command': lambda: print('Mirar gente'),
+                'style': 'info.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.TOP,
+                'anchor': tkb.CENTER
+            }
+        )
+
+        Button(
+            parent=containerFrame,
+            locator='pack',
+            ID='logOutButton',
+            params={
+                'text': 'Cerrar sesión',
+                'command': log_out,
+                'style': 'info.Outline.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.TOP,
+                'anchor': tkb.CENTER
+            }
+        )
+
+        # Add the admin and non-admin widgets
+        if 'adminWidgets' not in self._content.keys():
+            self['adminWidgets'] = []
+        self['adminWidgets'].extend([checkLogButton, checkStaffButton])
+
+        if 'nonAdminWidgets' not in self._content.keys():
+            self['nonAdminWidgets'] = []
+        self['nonAdminWidgets'].append(addLogButton)
+
+
     def __initialize_login(self) -> None:
+        '''
+        Initializes the login screen's widgets (initial frame)
+        '''
+
+        def log_in(*credential_entries):
+            '''
+            Tries to log in given some credentials
+
+            Params:
+                credentials: The credentials needed to try to log in
+            '''
+
+            self.focus()
+
+            idNumber, password = [entry.get() for entry in credential_entries]
+
+            try:
+                isAdmin = Manager.log_in(num=idNumber, passwd=password)
+
+                self._cookies = {
+                    'user': idNumber,
+                    'password': password,
+                    'admin': isAdmin
+                }
+
+                if 'adminWidgets' in self._content.keys():
+                    for w in self['adminWidgets']:
+                        w.activate() if isAdmin else w.deactivate()
+
+                if 'nonAdminWidgets' in self._content.keys():
+                        for w in self['nonAdminWidgets']:
+                            w.deactivate() if isAdmin else w.activate()
+
+                self.__change_to_main(current_frame=self['logInFrame'])
+
+                for entry in credential_entries:
+                    entry.restore()
+
+            except Manager.ManagerException as e:
+                Messagebox.show_error(message=str(e), title='Error', parent=self)
+
+
         logInFrame = Frame(
             parent=self,
             locator='pack',
@@ -140,10 +344,11 @@ class App(tkb.Window):
                 'pady': WINDOW_HEIGHT / 100,
                 'fill': tkb.BOTH,
                 'expand': True,
+                'anchor': tkb.CENTER
             },
             show=True
         )
-
+        
         containerFrame = Frame(
             parent=logInFrame,
             locator='pack',
@@ -155,6 +360,7 @@ class App(tkb.Window):
                 'padx': WINDOW_HEIGHT / 100,
                 'pady': WINDOW_HEIGHT / 100,
                 'expand': True,
+                'anchor': tkb.CENTER
             },
             show=True
         )
@@ -170,50 +376,59 @@ class App(tkb.Window):
                 'padx': WINDOW_HEIGHT / 100,
                 'pady': WINDOW_HEIGHT / 100,
                 'side': tkb.TOP,
+                'anchor': tkb.CENTER
             },
             show=True
         )
-
-        clearButton = Button(
+    
+        passwordEntry = TextEntry(
             parent=containerFrame,
             locator='pack',
-            ID='clearButton',
+            ID='passwordEntry',
             params={
-                'text': 'Clear Text!',
-                'command': lambda: idEntry.restore(),
-                'style': 'info.Outline.TButton'
+                
             },
             position_params={
                 'padx': WINDOW_HEIGHT / 100,
                 'pady': WINDOW_HEIGHT / 100,
-                'side': tkb.TOP
+                'side': tkb.TOP,
+                'anchor': tkb.CENTER
             },
             show=True
         )
 
-        logInButton = Button(
+        Button(
             parent=containerFrame,
             locator='pack',
             ID='logInButton',
             params={
-                'text': 'Get Text!',
-                'command': lambda: print(idEntry.get()),
+                'text': 'Iniciar sesión',
+                'command': lambda: log_in(idEntry, passwordEntry),
                 'style': 'info.TButton'
             },
             position_params={
                 'padx': WINDOW_HEIGHT / 100,
                 'pady': WINDOW_HEIGHT / 100,
-                'side': tkb.TOP
+                'side': tkb.TOP,
+                'anchor': tkb.CENTER
             },
             show=True
         )
-
+        idEntry.widget.bind(sequence='<Return>', func=lambda e: log_in(idEntry, passwordEntry))
+        passwordEntry.widget.bind(sequence='<Return>', func=lambda e: log_in(idEntry, passwordEntry))
 
 
     def __initialize(self) -> None:
         '''
         Initializes all the required widgets and frames for the application
         '''
+
+        ##############################
+        # The main frame (logged in) #
+        ##############################
+
+        self.__initialize_main()
+
 
         ################
         # Log-In Stuff #

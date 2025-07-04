@@ -15,7 +15,7 @@ class BaseWidget(ABC):
         _params (dict, Default=None):               The Tkinter widget location parameters
         _locator (callable, Default=None):          The method to use to locate the widget on screen
         _forgetter (callable, Default=None):        The method to use to hide the widget from the screen
-        _active (bool, Default=None):               Whether the widget is visible
+        _active (bool, Default=None):               Whether the widget will be visible when trying to place it on screen
     '''
 
     _widget: TkWidget = None
@@ -274,6 +274,14 @@ class ContainerWidget(BaseWidget, ABC):
         # show directly if wanted
         if show:
             self.show()
+
+
+    def __getitem__(self, key):
+        return self._content[key]
+
+
+    def __setitem__(self, key, value):
+        self._content[key] = value
 
 
     def show(self) -> None:
