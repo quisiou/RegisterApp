@@ -97,13 +97,13 @@ class Manager():
 
 
     @staticmethod
-    def get_columns(which: Literal['staff', 'logs'] = None) -> tuple:
+    def get_columns(which: Literal['staff', 'logs'] = None) -> list:
         '''
         Retrieves the column names of the specified dataframe
 
         :params (Literal['staff', 'logs'], Default=None) which: The dataframe
 
-        :returns output (tuple): The column names
+        :returns output (list): The column names
         '''
 
         if which == 'staff':
@@ -112,7 +112,7 @@ class Manager():
         else:
             df = Manager.get_dataframe(filename=LOG_FILE)
 
-        return tuple(df.columns)
+        return list(df.columns)
 
 
     @staticmethod

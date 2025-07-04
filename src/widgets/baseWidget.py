@@ -178,7 +178,7 @@ class Widget(BaseWidget, ABC):
     
     def show(self) -> None:
         '''
-        Shows the widget (and its children) on the screen
+        Shows the widget on the screen
         '''
 
         if self._active:
@@ -187,7 +187,7 @@ class Widget(BaseWidget, ABC):
     
     def hide(self) -> None:
         '''
-        Hides the widget (and its children) from the screen
+        Hides the widget from the screen
         '''
 
         if self._active:

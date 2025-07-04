@@ -4,6 +4,7 @@ from ttkbootstrap.dialogs import Messagebox
 from src.widgets.frame import Frame
 from src.widgets.textEntry import TextEntry
 from src.widgets.button import Button
+from src.widgets.table import Table
 
 from pathlib import Path, PosixPath
 
@@ -145,6 +146,95 @@ class App(tkb.Window):
         self['mainFrame'].show()
 
 
+    def __initialize_staff_table(self) -> None:
+        '''
+        Initializes the staff table frame
+        '''
+        
+        staffTableFrame = Frame(
+            parent=self,
+            locator='pack',
+            ID='staffTableFrame',
+            params={
+                
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'fill': tkb.BOTH,
+                'expand': True,
+                'anchor': tkb.CENTER
+            }
+        )
+
+        colnames = Manager.get_columns('staff')
+        rows = Manager.get_dataframe(filename=STAFF_FILE, as_list=True)
+
+        staffTable = Table(
+            parent=staffTableFrame,
+            locator='pack',
+            ID='staffTable',
+            params={
+                'coldata': colnames,
+                'rowdata': rows,
+                'searchable': True
+            },
+            position_params={
+                'fill': tkb.BOTH,
+                'expand': True,
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100
+            }
+        )
+
+        buttonsFrame = Frame(
+            parent=staffTableFrame,
+            locator='pack',
+            ID='buttonsFrame',
+            params={
+                
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.TOP,
+                'fill': tkb.BOTH
+            }
+        )
+
+        Button(
+            parent=buttonsFrame,
+            locator='pack',
+            ID='returnButton',
+            params={
+                'text': 'Volver',
+                'command': lambda: self.__change_to_main(current_frame=staffTableFrame),
+                'style': 'info.Outline.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.LEFT
+            }
+        )
+
+        Button(
+            parent=buttonsFrame,
+            locator='pack',
+            ID='addWorkerButton',
+            params={
+                'text': 'Añadir',
+                'command': lambda: print('Añadido!'),
+                'style': 'info.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.RIGHT
+            }
+        )
+
+
     def __initialize_main(self) -> None:
         '''
         Initializes the main screen's widgets (once logged in)
@@ -178,6 +268,15 @@ class App(tkb.Window):
 
             if doLog != 'No':
                 Manager.add_entry(self._cookies['user'])
+
+
+        def check_staff() -> None:
+            '''
+            Change to staff table frame
+            '''
+
+            self['mainFrame'].hide()
+            self['staffTableFrame'].show()
 
 
         mainFrame = Frame(
@@ -251,7 +350,7 @@ class App(tkb.Window):
             ID='checkStaffButton',
             params={
                 'text': 'Personal',
-                'command': lambda: print('Mirar gente'),
+                'command': check_staff,
                 'style': 'info.TButton'
             },
             position_params={
@@ -422,6 +521,13 @@ class App(tkb.Window):
         '''
         Initializes all the required widgets and frames for the application
         '''
+
+        ###############
+        # Staff Table #
+        ###############
+
+        self.__initialize_staff_table()
+
 
         ##############################
         # The main frame (logged in) #
