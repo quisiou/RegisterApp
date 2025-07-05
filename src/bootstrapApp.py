@@ -167,17 +167,14 @@ class App(tkb.Window):
             }
         )
 
-        colnames = Manager.get_columns('staff')
-        rows = Manager.get_dataframe(filename=STAFF_FILE, as_list=True)
-
         staffTable = Table(
             parent=staffTableFrame,
             locator='pack',
+            datafile=STAFF_FILE,
             ID='staffTable',
             params={
-                'coldata': colnames,
-                'rowdata': rows,
-                'searchable': True
+                'coldata': Manager.get_columns('staff'),
+                'searchable': True,
             },
             position_params={
                 'fill': tkb.BOTH,
@@ -224,7 +221,93 @@ class App(tkb.Window):
             ID='addWorkerButton',
             params={
                 'text': 'Añadir',
-                'command': lambda: print('Añadido!'),
+                'command': lambda: print('Añadido'),
+                'style': 'info.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.RIGHT
+            }
+        )
+
+
+    def __initialize_log_table(self) -> None:
+        '''
+        Initializes the log table frame
+        '''
+        
+        logTableFrame = Frame(
+            parent=self,
+            locator='pack',
+            ID='logTableFrame',
+            params={
+                
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'fill': tkb.BOTH,
+                'expand': True,
+                'anchor': tkb.CENTER
+            }
+        )
+
+        logTable = Table(
+            parent=logTableFrame,
+            locator='pack',
+            datafile=LOG_FILE,
+            ID='logTable',
+            params={
+                'coldata': [{'text': col, 'stretch': True} for col in Manager.get_columns('logs')],
+                'searchable': True,
+            },
+            position_params={
+                'fill': tkb.BOTH,
+                'expand': True,
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100
+            }
+        )
+
+        buttonsFrame = Frame(
+            parent=logTableFrame,
+            locator='pack',
+            ID='buttonsFrame',
+            params={
+                
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.TOP,
+                'fill': tkb.BOTH
+            }
+        )
+
+        Button(
+            parent=buttonsFrame,
+            locator='pack',
+            ID='returnButton',
+            params={
+                'text': 'Volver',
+                'command': lambda: self.__change_to_main(current_frame=logTableFrame),
+                'style': 'info.Outline.TButton'
+            },
+            position_params={
+                'padx': WINDOW_HEIGHT / 100,
+                'pady': WINDOW_HEIGHT / 100,
+                'side': tkb.LEFT
+            }
+        )
+
+        Button(
+            parent=buttonsFrame,
+            locator='pack',
+            ID='addWorkerButton',
+            params={
+                'text': 'Recargar',
+                'command': logTable.reload_data,
                 'style': 'info.TButton'
             },
             position_params={
@@ -277,6 +360,15 @@ class App(tkb.Window):
 
             self['mainFrame'].hide()
             self['staffTableFrame'].show()
+
+
+        def check_log() -> None:
+            '''
+            Change to log table frame
+            '''
+
+            self['mainFrame'].hide()
+            self['logTableFrame'].show()
 
 
         mainFrame = Frame(
@@ -333,7 +425,7 @@ class App(tkb.Window):
             ID='checkLogButton',
             params={
                 'text': 'Registros',
-                'command': lambda: print('Mirar registros'),
+                'command': check_log,
                 'style': 'info.TButton'
             },
             position_params={
@@ -527,6 +619,13 @@ class App(tkb.Window):
         ###############
 
         self.__initialize_staff_table()
+
+
+        #############
+        # Log Table #
+        #############
+
+        self.__initialize_log_table()
 
 
         ##############################
