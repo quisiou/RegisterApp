@@ -1,0 +1,2 @@
+Here lie a bunch of directly customised widgets from Tkinter or ttkbootstrap.
+That means subclasses of the widgets adjusted to the dev's need (and the app's limitations).

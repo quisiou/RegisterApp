@@ -2,7 +2,7 @@ from src.widgets.baseWidget import BaseWidget, ContainerWidget
 
 from src.dataManager import Manager
 
-from ttkbootstrap.tableview import Tableview
+from src.widgets.customs.customTableview import CustomTableview
 
 from typing import Literal
 from pathlib import Path, PosixPath
@@ -13,7 +13,6 @@ from pathlib import Path, PosixPath
 class Table(BaseWidget):
     '''
     Subclass of Widget. Represents a table (customised widget derived from Tkinter's Treeview).
-    The following are the posible tableview's parameters:
 
     Attributes:
         _datafile (str | Path | PosixPath):     Name of the file storing the data
@@ -50,7 +49,7 @@ class Table(BaseWidget):
         self._datafile = datafile
 
         super().__init__(
-            Obj=Tableview,
+            Obj=CustomTableview,
             master=parent.widget,
             locator=locator,
             container=parent.content,
