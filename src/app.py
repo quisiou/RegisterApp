@@ -1524,7 +1524,7 @@ class App(ctk.CTk):
             :returns output (Table): The created table
             '''
 
-            colnames = Manager.get_columns(which='staff')
+            colnames = Manager.get_columns(which='staff', except_cols=["Contraseña", ])
 
             staffTable = Table(
                 master=staffRegistryFrame.widget,

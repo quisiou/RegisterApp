@@ -245,14 +245,18 @@ class Table(Widget):
         )
 
 
-    def load(self, filename: str | Path | PosixPath) -> None:
+    def load(self, filename: str | Path | PosixPath, except_cols: list = ["Contraseña", ]) -> None:
         '''
         Loads the information into the table, taking into account the possible filters to be applied
 
         :params (str | Path | PosixPath) filename: Name of the file storing the data
         '''
         
-        data = Manager.get_dataframe(as_list=True, filename=filename)
+        data = Manager.get_dataframe(as_list=True, filename=filename, except_cols=except_cols)
+        
+        if filename == STAFF_FILE:
+            for row in data:
+                row[-1] = "Sí" if row[-1] else "No"
 
         # Delete possible items
         self.clear()

@@ -61,7 +61,8 @@ class Manager():
 
     @staticmethod
     def get_dataframe(size: int = None, as_list: bool = False,
-            filename: str | Path | PosixPath = None) -> pd.DataFrame | list:
+            filename: str | Path | PosixPath = None,
+            except_cols: list = []) -> pd.DataFrame | list:
         '''
         Retrieves (or creates) the dataframe containing the solicited registry
 
@@ -89,6 +90,10 @@ class Manager():
 
         res_df = df[ : min(size, len(df))]
 
+        for c in except_cols:
+            if c in res_df.columns:
+                res_df = res_df.drop(columns=[c, ])
+
         if as_list:
             return res_df.values.tolist()
 
@@ -97,7 +102,7 @@ class Manager():
 
 
     @staticmethod
-    def get_columns(which: Literal['staff', 'logs'] = None) -> tuple:
+    def get_columns(which: Literal['staff', 'logs'] = None, except_cols: list = []) -> tuple:
         '''
         Retrieves the column names of the specified dataframe
 
@@ -107,10 +112,10 @@ class Manager():
         '''
 
         if which == 'staff':
-            df = Manager.get_dataframe(filename=STAFF_FILE)
+            df = Manager.get_dataframe(filename=STAFF_FILE, except_cols=except_cols)
         
         else:
-            df = Manager.get_dataframe(filename=LOG_FILE)
+            df = Manager.get_dataframe(filename=LOG_FILE, except_cols=except_cols)
 
         return tuple(df.columns)
 
